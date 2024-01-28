@@ -1,0 +1,150 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Business partners'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_XX_BASIC_BP with parameters
+    p_type: snwd_business_partner_role
+ as select from snwd_bpa as bpa {
+    key node_key as NodeKey,
+    //data expression language inside CDS
+    case bp_role
+        when '01' then 'Customer'
+        when '02' then 'Supplier'         
+    end as BpRole,
+    email_address as EmailAddress,
+    web_address as WebAddress,
+    address_guid as AddressGuid,
+    bp_id as BpId,
+    company_name as CompanyName
+} where bp_role = $parameters.p_type
+
+
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Address data as view on view'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_XX_VOV_ADDR as select from snwd_ad as addr 
+inner join ZITC_XX_BASIC_BP(p_type: '01') as bpa on
+addr.node_key = bpa.AddressGuid
+{
+    key addr.node_key as NodeKey,
+    key bpa.NodeKey as CustomerKey,
+    addr.city as City,
+    addr.country as Country,
+    bpa.BpRole,
+    bpa.EmailAddress,
+    bpa.WebAddress,
+    bpa.AddressGuid,
+    bpa.BpId,
+    bpa.CompanyName
+}
+
+
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Get All Sales order total per customer'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_XX_CDS_AGG as select from snwd_so {
+    key buyer_guid as CustomerGuid,
+    @Semantics.amount.currencyCode: 'CurrencyCode'
+    sum(gross_amount) as TotalSales,
+    currency_code as CurrencyCode
+} group by currency_code, buyer_guid
+
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Association concept'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_XX_JOIN as select from ZITC_XX_BASIC_BP(p_type: '01') as cust 
+inner join ZITC_XX_CDS_AGG as sales on
+cust.NodeKey = sales.CustomerGuid
+{
+    key cust.NodeKey,
+    cust.BpRole,
+    cust.EmailAddress,
+    cust.WebAddress,
+    cust.AddressGuid,
+    cust.BpId,
+    cust.CompanyName,
+    sales.gross_amount
+}
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Association concept'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_XX_VOV_ASSO as select from ZITC_XX_BASIC_BP(p_type: '01') as cust 
+association[1..1] to snwd_ad as _Addr on
+$projection.AddressGuid = _Addr.node_key 
+association[1..1] to ZITC_XX_CDS_AGG as _Sales on
+$projection.NodeKey = _Sales.CustomerGuid
+{
+    key cust.NodeKey,
+    cust.BpRole,
+    cust.EmailAddress,
+    cust.WebAddress,
+    cust.AddressGuid,
+    cust.BpId,
+    cust.CompanyName,
+    --ad-hoc association ==> works exactly like inner join
+    --addr.country
+    --exposed association ==> association alias name, not apply join upfront
+    _Addr,
+    _Sales
+}
+
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Customer wise Sales'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+@OData.publish: true
+define view entity ZITC_XX_CUSTOMER_SALES as select from ZITC_XX_VOV_ASSO {
+    key NodeKey,
+    CompanyName,
+    _Addr.country,
+    _Addr.city,
+    BpId,
+    BpRole,
+    _Sales 
+}
+
+

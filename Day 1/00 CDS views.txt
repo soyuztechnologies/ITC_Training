@@ -1,0 +1,15 @@
+@AbapCatalog.sqlViewName: ‘ZITCXXBASICCDS'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Simple CDS view'
+define view ZITC_XX_BASIC_CDS as select from snwd_bpa
+{
+key node_key as NodeKey,
+bp_role as BpRole,
+email_address as EmailAddress,
+address_guid as AddressGuid,
+bp_id as BpId,
+company_name as CompanyName
+}
+

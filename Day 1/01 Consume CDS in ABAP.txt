@@ -1,0 +1,19 @@
+*&---------------------------------------------------------------------*
+*& Report ZITC_xx_call_cds
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZITC_xx_call_cds.
+
+data ls_bp type snwd_bpa.
+SELECT-OPTIONS s_bpid for ls_bp-bp_id.
+
+select * from ZITC_XX_BASIC_CDS into table @data(itab) where BpId in @s_bpid.
+
+cl_demo_output=>display_data(
+value = itab
+* name =
+* exclude =
+* include =
+).
+
