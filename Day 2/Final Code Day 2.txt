@@ -1,0 +1,144 @@
+@AbapCatalog.sqlViewName: 'ZITCAOBPA'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Get all business parrtner data'
+define view ZITC_AO_BPA as select from snwd_bpa
+{
+    key node_key as NodeKey,
+    bp_role as BpRole,
+    address_guid as AddressGuid,
+    bp_id as BpId,
+    company_name as CompanyName
+    
+}
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'CDS Entity BIUPA'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_AO_BUPA 
+    with parameters p_type: snwd_business_partner_role
+ as select from snwd_bpa
+{
+    key node_key as NodeKey,
+//    Data expression language
+    case bp_role 
+        when '01' then 'Customer'
+        when '02' then 'Supplier'
+    end as BpRole,
+    address_guid as AddressGuid,
+    bp_id as BpId,
+    company_name as CompanyName
+    
+} 
+
+
+*&---------------------------------------------------------------------*
+*& Report zitc_ao_consume_cds
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zitc_ao_consume_cds.
+
+data: ls_bp type snwd_bpa.
+
+PARAMETERS p_bp type snwd_business_partner_role.
+SELECT-OPTIONS s_bpid for ls_bp-bp_id.
+
+select * from ZITC_AO_BUPA( p_type = @p_bp ) into table @data(itab)
+WHERE BpId in @s_bpid.
+
+cl_demo_output=>display_data(
+  value   = itab
+*  name    =
+*  exclude =
+*  include =
+).
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'View on View concept'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_AO_VOV as select from ZITC_AO_BUPA(p_type:'01') as bpa
+inner join snwd_ad as addr on
+bpa.AddressGuid = addr.node_key
+{
+    key bpa.NodeKey,
+    bpa.BpRole,
+    bpa.AddressGuid,
+    bpa.BpId,
+    bpa.CompanyName,
+    addr.country,
+    addr.city,
+    addr.building
+} 
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'view on view'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZITC_SM_VOV as select from ZITC_AO_BUPA
+{
+    key NodeKey,
+    BpRole,
+    AddressGuid,
+    BpId,
+    CompanyName
+}
+
+
+@AbapCatalog.sqlViewAppendName: 'ZITCAOBUPAEXT'
+@EndUserText.label: 'EXTEND'
+extend view ZITC_AO_BPA with ZITC_AO_BUPA_EXT
+{
+    snwd_bpa.email_address as EmailAddress
+}
+
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Customer Sales data'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+@OData.publish: true
+define view entity ZITC_AO_CUST_SLS as select from ZITC_AO_VOV as bpa
+association[0..*] to snwd_so as _Orders on
+$projection.NodeKey = _Orders.buyer_guid
+{
+    key bpa.NodeKey,
+    bpa.BpRole,
+    bpa.AddressGuid,
+    bpa.BpId,
+    bpa.CompanyName,
+    bpa.country,
+    bpa.city,
+    bpa.building,
+    
+    //Ad-hoc association - Not good for performance
+    //_Orders.so_id
+    //Exposed association
+    _Orders
+    
+}
