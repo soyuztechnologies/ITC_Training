@@ -1,0 +1,168 @@
+CLASS zcl_zats_xx_amdp DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    interfaces if_amdp_marker_hdb.
+    interfaces if_oo_adt_classrun.
+    class-methods add_numbers importing value(a) type i
+                                        value(b) type i
+                              exporting value(result) type i.
+    class-methods get_customer_by_id importing value(i_bp_id) type zats_xx_dte_id
+                               exporting value(e_customer_name) type char16.
+    class-methods get_product_mrp  importing value(i_tax) type i
+                                exporting value(otab) type ZT_ZATS_XX_PROD.
+
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_zats_xx_amdp IMPLEMENTATION.
+  METHOD add_numbers by database procedure for hdb language sqlscript
+  options read-only.
+
+    result := :a + :b;
+
+  ENDMETHOD.
+
+  METHOD if_oo_adt_classrun~main.
+*    add_numbers(
+*      EXPORTING
+*        a      = 10
+*        b      = 30
+*      IMPORTING
+*        result = data(lv_result)
+*    ).
+
+*    get_customer_by_id(
+*      EXPORTING
+*        i_bp_id         = '12CC02ABF7251EECB285ED952E8FB4DF'
+*      IMPORTING
+*        e_customer_name = data(lv_result)
+*    ).
+*
+*    out->write(
+*      EXPORTING
+*        data   = |The total calculated by AMDP is { lv_result }|
+*    ).
+
+    get_product_mrp(
+      EXPORTING
+        i_tax = 18
+      IMPORTING
+        otab  = data(itab)
+    ).
+
+    out->write(
+      EXPORTING
+        data   = itab
+*        name   =
+*      RECEIVING
+*        output =
+    ).
+
+  ENDMETHOD.
+
+  METHOD get_customer_by_id by database procedure for hdb language sqlscript
+  options read-only using zats_xx_bpa.
+
+      select company_name into e_customer_name from zats_xx_bpa where bp_id = :i_bp_id;
+
+  ENDMETHOD.
+
+  METHOD get_product_mrp by database procedure for hdb language sqlscript
+  options read-only using zats_xx_product.
+
+     declare lv_count integer;
+     declare i integer;
+     declare lv_mrp bigint;
+     declare lv_price_d integer;
+
+     lt_prod = select * from zats_xx_product;
+
+
+     lv_count := record_count( :lt_prod );
+
+     --Equivelant of LOOP AT ITAB in ABAP - but here we are in SQL Script
+     for i in 1..:lv_count do
+
+        lv_price_d := :lt_prod.price[i] * ( 100 - :lt_prod.discount[i] ) / 100;
+        lv_mrp := :lv_price_d * ( 100 + :i_tax ) / 100;
+        if lv_mrp > 15000 then
+            lv_mrp := :lv_mrp * 0.90;
+        end if ;
+        --Append wa to itab
+        :otab.insert( ( :lt_prod.name[i],
+                        :lt_prod.category[i],
+                        :lt_prod.price[i],
+                        :lt_prod.currency[i],
+                        :lt_prod.discount[i],
+                        :lv_price_d,
+                        :lv_mrp ), i );
+
+     end for;
+
+
+  ENDMETHOD.
+
+ENDCLASS.
+
+------------------------------------------------------------------------------------
+-----6. Working with table functions
+------------------------------------------------------------------------------------
+
+@EndUserText.label: 'Table function NW7.5'
+define table function ZATS_XX_TF
+with parameters 
+@Environment.systemField: #CLIENT
+p_clnt : abap.clnt
+returns {
+  client : abap.clnt;
+  company_name : abap.char(256);
+  total_sales : abap.curr( 15, 2 );
+  currency_code: abap.cuky( 5 );  
+  customer_rank : abap.int4;
+}
+implemented by method zcl_zats_xx_amdp=>get_total_sales;
+
+
+  class-methods get_total_sales for table function ZATS_XX_TF.
+
+
+
+  METHOD get_total_sales by database function for hdb language sqlscript options read-only
+  using zats_xx_bpa zats_xx_so_hdr zats_xx_so_item.
+
+     return select bp.client, bp.company_name, sum( item.amount ) as total_sales,
+            item.currency as currency_code,
+            rank ( ) over( order by sum( item.amount ) desc ) as customer_rank
+             from zats_xx_bpa as bp
+            inner join zats_xx_so_hdr as sls
+            on bp.bp_id = sls.buyer
+            inner join zats_xx_so_item as item
+            on sls.order_id = item.order_id
+            group by bp.client, bp.company_name, item.currency limit 3;
+
+
+  ENDMETHOD.
+
+
+
+@AbapCatalog.sqlViewName: 'ZATSXXCCUSTANA'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Customer Analytics'
+define view ZATS_XX_C_CUST_ANA as select from ZATS_XX_C_SLS_CUST 
+association[1] to ZATS_XX_TF as _TotalSales
+on $projection.CompanyName = _TotalSales.company_name
+{
+    CompanyName,
+    sum(TotalSales) as TotalSales,
+    sum(TotalQty) as TotalQty,
+    _TotalSales(p_clnt: $session.client).customer_rank
+} group by CompanyName, _TotalSales(p_clnt: $session.client).customer_rank
