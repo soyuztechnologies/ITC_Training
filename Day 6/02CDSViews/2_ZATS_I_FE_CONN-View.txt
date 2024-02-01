@@ -1,0 +1,50 @@
+@AbapCatalog.sqlViewName: 'ZATSIFECONN'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Connection View entity'
+@Search.searchable: true
+define view ZATS_I_FE_CONN as select from zats_aconn as Connection
+  association [1..1] to ZATS_I_FE_CARR as _Airline on $projection.AirlineID = _Airline.AirlineID
+{
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8 
+  @ObjectModel.text.association: '_Airline'
+  @Consumption.valueHelpDefinition: [ {
+    entity: {
+      name: 'zats_i_fe_carr', 
+      element: 'AirlineID'
+    }
+  } ]
+  key Connection.carrier_id as AirlineID,
+  
+  key Connection.connection_id as ConnectionID,
+  
+  @Consumption.valueHelpDefinition: [ {
+    entity: {
+      name: '/DMO/I_Airport', 
+      element: 'AirportID'
+    }
+  } ]
+  Connection.airport_from_id as DepartureAirport,
+  
+  @Consumption.valueHelpDefinition: [ {
+    entity: {
+      name: '/DMO/I_Airport', 
+      element: 'AirportID'
+    }
+  } ]
+  Connection.airport_to_id as DestinationAirport,
+  
+  Connection.departure_time as DepartureTime,
+  
+  Connection.arrival_time as ArrivalTime,
+  
+  @Semantics.quantity.unitOfMeasure: 'DistanceUnit'
+  Connection.distance as Distance,
+  
+  @Semantics.unitOfMeasure: true
+  Connection.distance_unit as DistanceUnit,
+  
+  _Airline
+}

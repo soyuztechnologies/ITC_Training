@@ -1,0 +1,2 @@
+Create a Data Element of CHAR256
+with name Data Element: ZDMO_CARRIER_PIC
