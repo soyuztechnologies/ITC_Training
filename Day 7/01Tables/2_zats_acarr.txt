@@ -1,0 +1,13 @@
+@EndUserText.label : 'Carrier persistence for Travel scenario'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zats_acarr {
+  key client      : mandt not null;
+  key carrier_id  : /dmo/carrier_id not null;
+  name            : /dmo/carrier_name;
+  carrier_pic_url : zdmo_carrier_pic;
+  currency_code   : /dmo/currency_code;
+
+}

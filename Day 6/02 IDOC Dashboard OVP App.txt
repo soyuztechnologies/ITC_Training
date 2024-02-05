@@ -1,0 +1,201 @@
+@AbapCatalog.sqlViewName: 'ZITC_AOIEDIDSMAX'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Max counter record from EDIDS'
+define view ZITC_AO_I_EDIDS_MAX as select from edids {
+    key docnum,
+    max( countr ) as countr
+} group by docnum
+
+
+
+@AbapCatalog.sqlViewName: 'ZITC_AOIEDIDSREC'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Get the status of max counter record'
+@VDM.viewType: #BASIC
+
+define view ZITC_AO_I_EDIDS_RECORDS as select from edids 
+inner join ZITC_AO_I_EDIDS_MAX as _MaxRecord
+on edids.docnum = _MaxRecord.docnum
+and edids.countr = _MaxRecord.countr
+{
+    key edids.docnum as Docnum,
+    key _MaxRecord.countr as Countr,
+    status as Status,
+    statxt as Statxt,
+    stapa1 as Stapa1,
+    stapa2 as Stapa2,
+    stapa3 as Stapa3,
+    stapa4 as Stapa4,
+    stamid as Stamid,
+    stamno as Stamno,
+    case 
+        when(edids.stamid = 'CASH_MSG' and edids.stamno = '095') then 'Not Routed'
+        when(edids.stamid = 'V1' and edids.stamno = '384') then 'Missing Part number'
+        when(edids.stamid = 'TAX_TXJCD' and edids.stamno = '101') then 'Address Error'
+        when(edids.stamid = 'VG' and edids.stamno = '140') then 'Ship-to LOC ID not setup'
+        else 'Others' end as ErrorCategory,
+    case when (edids.stamid = 'CASH_MSG' and edids.stamno = '095') then cast(1 as abap.int4) else 0 end as NotRouted,
+    case when (edids.stamid = 'V1' and edids.stamno = '095') then cast(1 as abap.int4) else 0 end as MissingPartNo,
+    case when (edids.stamid = 'TAX_TXJCD' and edids.stamno = '101') then cast(1 as abap.int4) else 0 end as AddressErr,
+    case when (edids.stamid = 'VG' and edids.stamno = '140') then cast(1 as abap.int4) else 0 end as ShipLocErr,
+    case when ((edids.stamid = 'CASH_MSG' and edids.stamno = '095') or
+    (edids.stamid = 'V1' and edids.stamno = '095') or
+    (edids.stamid = 'TAX_TXJCD' and edids.stamno = '101') or 
+    (edids.stamid = 'VG' and edids.stamno = '140') ) then 0 else 1 end as Others
+
+}
+
+
+
+@AbapCatalog.sqlViewName: 'ZITC_AOCOIDOCCAT'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Composite view for idoc header and category'
+define view ZITC_AO_CO_IDOC_CAT as select from edidc 
+association[1] to ZITC_AO_I_EDIDS_RECORDS as _Status on
+$projection.Docnum = _Status.Docnum
+{
+    key edidc.docnum as Docnum,
+    edidc.status as Status,
+    edidc.credat as Credat,
+    edidc.cretim as Cretim,
+    _Status.Countr,
+    _Status.Statxt,
+    _Status.Stapa1,
+    _Status.Stapa2,
+    _Status.Stapa3,
+    _Status.Stapa4,
+    _Status.Stamid,
+    _Status.Stamno,
+    _Status.ErrorCategory,
+    _Status.NotRouted,
+    _Status.MissingPartNo,
+    _Status.AddressErr,
+    _Status.ShipLocErr,
+    _Status.Others
+}
+
+
+
+@AbapCatalog.sqlViewName: 'ZITC_AOCIDOCDSHB'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'IDOC Dashboard consumption view'
+@VDM.viewType: #CONSUMPTION
+@OData.publish: true
+@UI.chart: [{ 
+    chartType: #DONUT,
+    title: 'Total Issues',
+    description: 'Error Category by Total',
+    dimensions: ['ErrorCategory'],
+    measures: ['TotalIssues'],
+    dimensionAttributes: [{dimension: 'ErrorCategory', role: #CATEGORY }],
+    measureAttributes: [{measure: 'TotalIssues', asDataPoint: true,role: #AXIS_1 }]
+},{
+    qualifier: 'spiderman',
+    chartType: #COLUMN,
+    title: 'Total Issues',
+    description: 'Error Category by Total',
+    dimensions: ['ErrorCategory'],
+    measures: ['TotalIssues'],
+    dimensionAttributes: [{dimension: 'ErrorCategory', role: #CATEGORY }],
+    measureAttributes: [{measure: 'TotalIssues', asDataPoint: true,role: #AXIS_1 }]
+}]
+
+define view ZITC_AO_C_IDOC_DSHB as select from ZITC_AO_CO_IDOC_CAT {
+    @UI.lineItem: [{position: 10 }]
+    key ErrorCategory,
+    @DefaultAggregation: #SUM
+    @UI.lineItem: [{position: 20, type: #AS_DATAPOINT }]
+    @UI.dataPoint:{
+        criticalityCalculation:{
+            improvementDirection: #MINIMIZE,
+            deviationRangeHighValue: 1500,
+            deviationRangeLowValue: 1500,
+            toleranceRangeLowValue: 50,
+            toleranceRangeHighValue: 50
+        }
+    }
+    sum( case ErrorCategory
+            when 'Not Routed' then NotRouted
+            when 'Missing Part number' then MissingPartNo 
+            when 'Address Error' then  AddressErr
+            when 'Ship-to LOC ID not setup' then ShipLocErr 
+            else Others end 
+     ) as TotalIssues
+    
+    
+} group by ErrorCategory
+
+
+@EndUserText.label: 'iDOC message variables'
+define table function ZITC_AO_TF_IDOC_MSG
+with parameters 
+@Environment.systemField: #CLIENT
+p_clnt : abap.clnt
+returns {
+  client : abap.clnt;
+  docnum : edi_docnum;
+  statxt : edi_statx_;
+}
+implemented by method zcl_ITC_AO_idoc=>get_message_Text;
+
+
+CLASS zcl_ITC_AO_idoc DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_amdp_marker_hdb .
+    CLASS-METHODS get_message_Text for table FUNCTION ZITC_AO_TF_IDOC_MSG.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_ITC_AO_idoc IMPLEMENTATION.
+  METHOD get_message_text by DATABASE FUNCTION FOR HDB LANGUAGE SQLSCRIPT
+  USING edids.
+
+    /*Step 1: get the message and doc from status table with max counter record*/
+    lt_unprocessed = select mandt as client, docnum, countr, statxt, stapa1,
+    stapa2, stapa3, stapa4 from edids where
+    ( docnum, countr ) in ( select docnum, max( countr ) from edids group by docnum );
+
+    /*Step 2: start replacing the occurreneces of & with each variable*/
+    lt_msg1 = select client, docnum,
+                case when statxt like '%&%'
+                    then concat(concat(substr_before(statxt, '&'), stapa1),substr_after(statxt, '&'))
+                    else statxt end as statxt,
+                    stapa2, stapa3, stapa4 from :lt_unprocessed;
+
+    lt_msg2 = select client, docnum,
+                case when statxt like '%&%'
+                    then concat(concat(substr_before(statxt, '&'), stapa2),substr_after(statxt, '&'))
+                    else statxt end as statxt,
+                    stapa3, stapa4 from :lt_msg1;
+    lt_msg3 = select client, docnum,
+                case when statxt like '%&%'
+                    then concat(concat(substr_before(statxt, '&'), stapa3),substr_after(statxt, '&'))
+                    else statxt end as statxt,
+                     stapa4 from :lt_msg2;
+
+    return select client, docnum,
+                case when statxt like '%&%'
+                    then concat(concat(substr_before(statxt, '&'), stapa4),substr_after(statxt, '&'))
+                    else statxt end as statxt
+                     from :lt_msg3;
+
+  ENDMETHOD.
+
+ENDCLASS.
+

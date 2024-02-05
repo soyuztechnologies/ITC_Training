@@ -1,0 +1,24 @@
+@EndUserText.label : 'Draft table for entity ZATS_FE_Booking'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zats_dbook {
+  key client         : mandt not null;
+  key bookinguuid    : sysuuid_x16 not null;
+  traveluuid         : sysuuid_x16 not null;
+  bookingid          : /dmo/booking_id;
+  bookingdate        : /dmo/booking_date;
+  customerid         : /dmo/customer_id;
+  carrierid          : /dmo/carrier_id;
+  connectionid       : /dmo/connection_id;
+  flightdate         : /dmo/flight_date;
+  @Semantics.amount.currencyCode : 'zats_dbook.currencycode'
+  flightprice        : /dmo/flight_price;
+  currencycode       : /dmo/currency_code;
+  createdby          : syuname;
+  lastchangedby      : syuname;
+  locallastchangedat : timestampl;
+  "%admin"           : include sych_bdl_draft_admin_inc;
+
+}

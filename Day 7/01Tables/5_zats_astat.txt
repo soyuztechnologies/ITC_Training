@@ -1,0 +1,11 @@
+@EndUserText.label : 'Status Description persistence for Travel scenario'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zats_astat {
+  key client           : mandt not null;
+  key travel_status_id : /dmo/overall_status not null;
+  travel_status_text   : /dmo/description;
+
+}

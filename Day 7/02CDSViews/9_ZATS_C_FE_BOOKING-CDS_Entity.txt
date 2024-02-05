@@ -1,0 +1,85 @@
+@AccessControl.authorizationCheck: #CHECK
+@Metadata.allowExtensions: true
+@EndUserText.label: 'Projection View forBooking'
+@Search.searchable: true
+define view entity ZATS_C_FE_BOOKING
+  as projection on ZATS_I_FE_BOOKING
+{
+  key BookingUUID,
+  
+  TravelUUID,
+  
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.90 
+  BookingID,
+  
+  BookingDate,
+  
+  @Consumption.valueHelpDefinition: [ {
+    entity: {
+      name: '/DMO/I_Customer', 
+      element: 'CustomerID'
+    }
+  } ]
+  CustomerID,
+  
+  @Consumption.valueHelpDefinition: [ {
+    entity: {
+      name: 'zats_i_fe_carr', 
+      element: 'AirlineID'
+    }
+  } ]
+  CarrierID,
+  
+  @Consumption.valueHelpDefinition: [ {
+    entity: {
+      name: 'zats_i_fe_flig', 
+      element: 'ConnectionID'
+    }, 
+    additionalBinding: [ {
+      localElement: 'FlightDate', 
+      element: 'FlightDate'
+    }, {
+      localElement: 'CarrierID', 
+      element: 'AirlineID'
+    }, {
+      localElement: 'FlightPrice', 
+      element: 'Price'
+    }, {
+      localElement: 'CurrencyCode', 
+      element: 'CurrencyCode'
+    } ]
+  } ]
+  ConnectionID,
+  
+  FlightDate,
+  
+  @Semantics.amount.currencyCode: 'CurrencyCode'
+  FlightPrice,
+  
+  @Consumption.valueHelpDefinition: [ {
+    entity: {
+      name: 'I_Currency', 
+      element: 'Currency'
+    }
+  } ]
+  CurrencyCode,
+  
+  CreatedBy,
+  
+  LastChangedBy,
+  
+  LocalLastChangedAt,
+  
+  _Travel : redirected to parent ZATS_C_FE_TRAVEL,
+  
+  _Connection,
+  
+  _Flight,
+  
+  _Carrier,
+  
+  _Currency,
+  
+  _Customer
+}

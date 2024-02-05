@@ -1,0 +1,87 @@
+managed;
+with draft;
+
+define behavior for ZATS_I_FE_TRAVEL alias Travel
+implementation in class ZBP_I_FE_Travel unique
+persistent table ZATS_ATRAV
+draft table ZATS_DTRAV
+etag master LocalLastChangedAt
+lock master total etag LastChangedAt
+
+{
+  field ( readonly )
+   TravelID;
+
+  field ( numbering : managed )
+   TravelUUID;
+
+
+  create;
+  update;
+  delete;
+
+  mapping for ZATS_ATRAV
+  {
+    TravelUUID = TRAVEL_UUID;
+    TravelID = TRAVEL_ID;
+    AgencyID = AGENCY_ID;
+    CustomerID = CUSTOMER_ID;
+    BeginDate = BEGIN_DATE;
+    EndDate = END_DATE;
+    BookingFee = BOOKING_FEE;
+    TotalPrice = TOTAL_PRICE;
+    CurrencyCode = CURRENCY_CODE;
+    Description = DESCRIPTION;
+    OverallStatus = OVERALL_STATUS;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _Booking { create; with draft; }
+
+  determination CalculateTravelID on save { create; }
+}
+
+define behavior for ZATS_I_FE_BOOKING alias Booking
+implementation in class ZBP_I_FE_Booking unique
+persistent table ZATS_ABOOK
+draft table ZATS_DBOOK
+etag master LocalLastChangedAt
+lock dependent by _Travel
+
+{
+  field ( readonly )
+   TravelUUID,
+   BookingID;
+
+  field ( numbering : managed )
+   BookingUUID;
+
+
+  update;
+  delete;
+
+  mapping for ZATS_ABOOK
+  {
+    BookingUUID = BOOKING_UUID;
+    TravelUUID = TRAVEL_UUID;
+    BookingID = BOOKING_ID;
+    BookingDate = BOOKING_DATE;
+    CustomerID = CUSTOMER_ID;
+    CarrierID = CARRIER_ID;
+    ConnectionID = CONNECTION_ID;
+    FlightDate = FLIGHT_DATE;
+    FlightPrice = FLIGHT_PRICE;
+    CurrencyCode = CURRENCY_CODE;
+    CreatedBy = CREATED_BY;
+    LastChangedBy = LAST_CHANGED_BY;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _Travel { with draft; }
+
+ determination CalculateBookingID on save { create; }
+}
