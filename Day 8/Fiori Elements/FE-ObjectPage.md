@@ -1,439 +1,370 @@
-# Hands-on exercise for List Page (https://www.anubhavtrainings.com):<br/>Creating a list report
+# Hands-on exercise :<br/>Creating an object page
 
 ## Introduction
-In the CDS files of your RAP based service you can add annotations to refine the user interface. These CDS annotations will be translated into OData annotations used by SAP Fiori elements to generate the UIs. UI annotations are stored within metadata extension files to separate them from the CDS view structure for better reading.
-
-In this unit you will add annotations to refine a list report. You  will use the ABAP Development Tools in Eclipse.
+In this unit you will add annotations to refine an object page (the 'travel details'). 
 
 You will learn how to
-- Add columns to the table
-- Add selection fields to the filter bar
-- Add list report header information  
-- Define a value help as a drop down list
-- Define criticality ratings
+  - Add a title and a subtitle to the object page header
+  - Add key data to the object page header
+  - Add a section and use field groups to structure data
+  - Add a table
+  - Include pictures in a table
 
->Whenever your unique suffix for creating objects is needed, the object names within this tutorial are named with suffix "ZITC_AO". For the screenshots the suffix "000100" was used.
+>Whenever your unique suffix for creating objects is needed, the object names within this tutorial are named with suffix "######". For the screenshots the suffix "000100" was used.
 
-**Prerequisite: You have performed all previous exercises of this course.**
+## Step 1. Add title and subtitle to the object page header
+Clicking on any item of the list report will show the object page for this item. The object page currently shows only some standard buttons and does not contain any further fields or actions.
+In this step you will add annotations to show a title and a subtitle in the object page header.
 
+>Remember that you can use **code completion** by pressing **`CTRL+SPACE`** at the relevant positions in your coding
 
-## Step 1. Start the app preview
-1. Start the service preview
-
-    When the service is published, its entities are shown within a tree-view on the right part of the service binding.
-
-    With that the service is actively running and can be used for creating SAP Fiori elements applications.
-
-    To immediately see the service running in an application you can start the preview mode within the ABAP Development tools. Simply select the main entity **Travel** in the tree-view and press the **Preview...** button on the right side of the service binding.
-
-    ![Load generator class](images/unit0/PrepareService_8.png)
-
-
-2. Logon to the service preview
-
-    After logging in, a generated list report object page application will be  shown in preview mode. Since there are no line item annotations available, no columns are shown in the list report table.
-
-    ![Load generator class](images/unit0/PrepareService_10.png)
-
-
-## Step 2. Create a metadata extension file for the Travel entity
-Annotations controlling the UI can be stored in metadata extension files. In this section such a file will be created for the Travel entity and a first annotation will be added.
-
-
-1. Right clicking the `ZITC_AO_C_FE_TRAVEL` projection view for the Travel entity opens a context menu. Choose option **New Metadata Extension**.
-
-    ![Create new metadata extension file](images/unit0/MetadataExtension_1.png)
-
-    Enter the name of your metadata extension file. Choose the same name as your projection view file name **`ZITC_AO_C_FE_TRAVEL`** and enter a description as well. Click **Next**.
-
-    ![Create new metadata extension file](images/unit0/MetadataExtension_2.png)
-
-    A transport request is already assigned to the metadata extension file. Press  **Finish** to confirm the creation of the file.
-
-    ![Create new metadata extension file](images/unit0/MetadataExtension_3.png)
-
-
-2. Now open the new metadata extension file `ZITC_AO_C_FE_TRAVEL` within the **Metadata Extensions** folder. To show a first column within the list report table, add the content shown in the coding example below. 
-
-    >You can use code completion by pressing **`CTRL+SPACE`** at the related coding positions, e.g. when adding the `@UI.lineItem` annotation, just type **`@UI`** and then press **`CTRL+SPACE`** to choose the entry from the list of proposals.
+1. Open the metadata extensions for the Travel view `ZITC_AO_C_FE_TRAVEL`. In the previous unit you already defined header information. Now you will enhance the annotation `@UI.headerInfo` with a `title` and a `description` property.
 
     ```CDS
-    @Metadata.layer: #CORE
+    ...
+
+    @UI: {
+        headerInfo: {
+            typeName: 'Travel',
+            typeNamePlural: 'Travels',
+            title: {
+                type: #STANDARD, value: 'Description'
+            },
+            description: {
+                value: 'TravelID'
+            }
+        },
+    ...
+
+    ```
+
+    Click **Save** and **Activate**.
+
+2. Refresh the browser window. You will see an object page containing a title and a subtitle in the header and an empty content section.
+   By the time the screenshot got created the subtitle falsely showed the text as subtitle. This was corrected in the meantime, and it shows the ID now.
+  
+   ![App object page title](images/unit1/t3-app-object-page-title.png)
+
+
+## Step 2. Add data points to the object page header
+In this step you will add some key information to the object page header using data points.
+
+1. As in the steps before, open the metadata extensions for the Travel view `ZITC_AO_C_FE_TRAVEL`.
+
+    Add the `@UI.facet` annotation with two objects of type `#DATAPOINT_REFERENCE`. 
+
+    ```CDS
+    ...
     annotate view ZITC_AO_C_FE_TRAVEL with
     {
-        @UI.lineItem: [{ position: 10 }]
-        TravelID;
+
+        @UI.facet: [
+          {
+              id: 'TravelHeaderPrice',
+              purpose: #HEADER,
+              type: #DATAPOINT_REFERENCE,
+              position: 10,
+              targetQualifier: 'PriceData'
+          },
+          {
+              id: 'TravelHeaderOverallStatus',
+              purpose: #HEADER,
+              type: #DATAPOINT_REFERENCE,
+              position: 20,
+              targetQualifier: 'StatusData'
+           }
+      ]
+
+      @UI.lineItem: [{ position: 10}]
+      TravelID;  
+      ...      
+    ```
+
+2. Annotating properties `TotalPrice` and `OverallStatus` with `@UI.datapoint` using the `targetQualifier` from the facet definition in step 1 will assign the properties to the header facet accordingly.
+
+    ```CDS
+    ...
+    @UI.lineItem: [{ position: 70}]
+    @UI.dataPoint: { qualifier: 'PriceData', title: 'Total Price'}
+    TotalPrice;
+    ...
+    ```
+    ```CDS
+    ...
+    @UI.lineItem: [{ position: 80, criticality: 'OverallStatusCriticality' }]
+    @UI.selectionField: [{ position: 30}]
+    @UI.textArrangement: #TEXT_ONLY
+    @UI.dataPoint: { qualifier: 'StatusData', title: 'Status', criticality: 'OverallStatusCriticality' }
+    OverallStatus;
+    ...
+    ```
+    Click **Save** and **Activate**.
+
+
+3. Switch to the app preview and refresh the browser window. The two new data points show up in the object page header. The labels are taken from property `title`, the color of **Status** from property `criticality` of the `datapoint` annotations .
+
+    ![App Data Points](images/unit1/t3-app-data-points.png)
+
+## Step 3. Add a new section with title "General Information"
+In this step you will add a section to the content area of the object page. The section will contain a form with three data fields.
+
+1. Open the metadata extension file for the Travel view `ZITC_AO_C_FE_TRAVEL` and enter the facet annotations that define the section **General Information** as a collection facet, using the type `Collection`. Add a second facet as a child of **General Information** with facet type `#IDENTIFICATION_REFERENCE` to create a form with title **General**. Add the code from line 8 to line 21 to your existing UI facet definition.
+
+
+    ```CDS
+    ...
+    annotate view ZITC_AO_C_FE_TRAVEL with
+    {
+
+      @UI.facet: [
+      ...
+
+        {
+          label: 'General Information',
+          id: 'GeneralInfo',
+          type: #COLLECTION,
+          position: 10
+        },
+        {
+          label: 'General',
+          id: 'Travel',
+          type: #IDENTIFICATION_REFERENCE,
+          purpose: #STANDARD,
+          parentId: 'GeneralInfo',
+          position: 10
+        }
+      ]
+
+    ...
+
     }
     ```
 
-    Note that the metadata layer of our app is set to **`#CORE`**. Metadata extensions support a layering concept where **`#CORE`** has the lowest and **`#CUSTOMER`** has the highest priority. Code completion shows you the full list of available values.
-
-    To finish this step, press **Save** and **Activate** to take over the changes in your metadata extensions file.
-
-    ![Create new metadata extension file](images/unit0/MetadataExtension_4.png)
-
-    Check your changes by refreshing the preview of your application and press the **Go** button to load the data.
-
-    ![Create new metadata extension file](images/unit0/MetadataExtension_5.png)
-
-    You will now see the column **Travel ID** made visible on the list report table by the `@UI.lineItem` annotation added to the metadata extensions file. The data shown in the column is loaded from the database with the request triggered by the **Go** button.
-
-
-## Step 3. Add table columns and filter bar selection fields
-To see some more data on the list report you are now adding more columns to the table and to simplify the selection of data you will add filter fields to the filter bar.
-
-1. If no longer open, please open the metadata extension file `ZITC_AO_C_FE_TRAVEL` located in folder `Core Data Services` > `Metadata Extensions`.
-
-    Now add the fields with the corresponding `lineItem` annotations to the metadata extension file as shown in the code fragment below. The property `position` controls the order of the columns within the list report table.
+2. Add a new field `Description` and annotate this and the properties `AgencyID` and `CustomerID` with `@UI.Identification` to position these fields under **General**.
 
     ```CDS
-    @UI.lineItem: [{ position: 20 }]
-    AgencyID;
+    annotate view ZITC_AO_C_FE_TRAVEL with
+    {
 
-    @UI.lineItem: [{ position: 30 }]
-    CustomerID;
+    ...
 
-    @UI.lineItem: [{ position: 40 }]
-    BeginDate;
+      @UI.lineItem: [{ position: 10}]
+      TravelID;
 
-    @UI.lineItem: [{ position: 50 }]
-    EndDate;
+      @UI.identification: [{ position: 10 }]
+      Description;
 
-    @UI.lineItem: [{ position: 60 }]
-    BookingFee;
+      @UI.lineItem: [{ position: 20}]
+      @UI.selectionField: [{ position: 10}]
+      @UI.identification: [{ position: 30 }]
+      AgencyID;
 
-    @UI.lineItem: [{ position: 70 }]
-    TotalPrice;
-
-    @UI.lineItem: [{ position: 80 }]
-    OverallStatus;
-
-    @UI.lineItem: [{ position: 90 }]
-    LocalLastChangedAt;
+      @UI.lineItem: [{ position: 30}]
+      @UI.selectionField: [{ position: 20}]
+      @UI.identification: [{ position: 20 }]
+      CustomerID;
+    ...
+    }
     ```
 
-    As a result, after saving and activating the metadata extension file and then refreshing the preview of your application, you will see the additional columns shown in the list report table.
-
-    >Note: The default table type of a list report is the responsive table. You can show or hide columns of list report and object page tables depending on the screen width using the `Importance: #High/#Medium/#Low` property in the lineItem annotation. If the screen size is narrowed down too much, the columns annotated with High and Medium start to pop in, while the ones annotated with Low are hidden. As soon as the first column is hidden, a button `Show Details` appears in the table toolbar.
-
-    ![add columns to the list report](images/unit0/TableColumnsSelectionFields_1.png)
+    Click **Save** and **Activate**.
 
 
-2. To assign specific fields to the filter bar you will use the `selectionField` annotation. Add this annotation to the three existing fields `AgencyID`, `CustomerID` and `OverallStatus` as shown in the coding example below.
+3. Refresh the app window. The new form **General** is shown in section **General Information** containing the three fields.
+
+    ![App section GeneralInfo](images/unit1/t3-app-section-General-Information.png)
+
+## Step 4. Add two additional field groups to section "General Information"
+A field group contains one or more data fields inside a UI container. In this step you define two field groups in section **General Information**.
+
+1. Open the metadata extension file for the Travel view `ZITC_AO_C_FE_TRAVEL`.
+
+    First, define a field group for the beginning and end date of a travel item and for the prices. The facet type for a field group is `#FIELDGROUP_REFERENCE`. Add the code from line 8 to line 25 to the end of the `@UI.facet` section.
 
     ```CDS
-    @UI.lineItem: [{ position: 20 }]
-    @UI.selectionField: [{ position: 10 }]
-    AgencyID;
+    annotate view ZITC_AO_C_FE_TRAVEL with
+    {
 
-    @UI.lineItem: [{ position: 30 }]
-    @UI.selectionField: [{ position: 20 }]
-    CustomerID;
+      @UI.facet: [
+        {
+
+        ...
+        {
+          id: 'Dates',
+          purpose: #STANDARD,
+          type: #FIELDGROUP_REFERENCE,
+          parentId: 'GeneralInfo',
+          label: 'Dates',
+          position: 30,
+          targetQualifier: 'DatesGroup'
+        },
+        {
+          id: 'Prices',
+          purpose: #STANDARD,
+          type: #FIELDGROUP_REFERENCE,
+          parentId: 'GeneralInfo',
+          label: 'Prices',
+          position: 20,
+          targetQualifier: 'PricesGroup'
+        }
+      ]
+    ...
+
+    }
     ```
-    ```CDS
-    @UI.lineItem: [{ position: 80 }]
-    @UI.selectionField: [{ position: 30 }]
-    OverallStatus;
-    ```
 
-    Again save and activate the file and refresh the application to see the changes on the UI.
-
-    You can now filter the data loaded into the list report by specifying values for these additional selection fields.
-
-    ![add selection fields to the list report](images/unit0/TableColumnsSelectionFields_2.png)
-
-
-## Step 4. Add header information and default sorting
-Now the list report table shall be sorted by the last updated travel records and also the number of records available in the database shall be visible. 
-
-1. To achieve this, add header information to the metadata extension file right above the view annotation.
-Note that we didn't cover the presentationVariant property in the corresponding openSAP video for timing reasons.
-
-   >Reminder: You can use code completion by pressing **`CTRL+SPACE`** at the related coding positions, e.g. when adding the `@UI.headerInfo` annotation, just type **`@UI`** and then press **`CTRL+SPACE`** to choose the entry from the list of proposals.
-
-   ```CDS
-   @Metadata.layer: #CORE
-   
-   @UI: {
-       headerInfo: {
-           typeName: 'Travel',
-           typeNamePlural: 'Travels'
-       },
-       presentationVariant: [{
-           sortOrder: [{
-               by: 'LocalLastChangedAt',
-               direction: #DESC
-           }],
-           visualizations: [{
-               type: #AS_LINEITEM
-           }]
-       }]
-   }
-   
-   annotate view ZITC_AO_C_FE_TRAVEL with
-   {
-   ...
-   ```
-
-   The `@UI.headerInfo` annotation contains information about the naming of the main entity in singular and plural format and it shows the number of records available in the database in the table title. The  table title is determined by the `typeNamePlural` property.
-
-   The `@UI.presentationVariant` annotation controls the sorting of the table by field `LocalLastChangedAt` via `sortOrder` property. The `visualizations` property determines that the sorting is applied to the list report table.
-
-
-2. Save and activate the metadata extension file and refresh the application preview to see the result on the UI.
-
-   ![add header info](images/unit0/HeaderInfo_1.png)
-
-
-## Step 5. Refine columns having IDs
-Instead of showing IDs for the fields Travel ID, Agency ID and Customer ID one would preferably show descriptions or names. Additionally some labels of specific fields will be changed globally to make the new label accessible wherever the fields will be used on the list report or object page.
-
-1. You will achieve this by using specific annotations which are  implemented within the projection view `ZITC_AO_C_FE_TRAVEL`. For this, open the projection view located in folder **Core Data Services** > **Data Definitions** which contains the root view definitions for the Travel entity.
-
-    ![refine ids](images/unit0/IDsLabels_1.png)
-
-
-2. Add the `@EndUserText` and `@ObjectModel` annotations to the fields as shown in the coding fragments below.
-
-    Annotation `@EndUserText.label` defines the column label for the related fields. `@ObjectModel.text.element` controls the source of the content shown for the related field. For field `TravelID` this will be the `Description` field from this view. `AgencyID` and `CustomerID` will get their content from the related field through the corresponding association.
+2. Annotate the properties `BeginDate` and `EndDate `with `@UI.fieldGroup`. Make sure you use the same field group qualifier `DatesGroup` but different positions in each annotation. Apply the same for the properties `BookingFee` and `TotalPrice` using field group annotations with qualifier `PricesGroup`.
 
     ```CDS
-    @EndUserText.label: 'Travel'
-    @ObjectModel.text.element:  [ 'Description' ]
-    TravelID,
+     ...
+
+     @UI.lineItem: [{ position: 40}]
+     @UI.fieldGroup: [{ qualifier: 'DatesGroup', position: 10 }]
+     BeginDate;
+
+     @UI.lineItem: [{ position: 50}]
+     @UI.fieldGroup: [{ qualifier: 'DatesGroup', position: 20 }]
+     EndDate;
+
+     @UI.lineItem: [{ position: 60}]
+     @UI.fieldGroup: [ { qualifier: 'PricesGroup', position: 10} ]
+     BookingFee;
+
+     @UI.lineItem: [{ position: 70}]  
+     @UI.dataPoint: { qualifier: 'PriceData', title: 'Total Price'}
+     @UI.fieldGroup: [{ qualifier: 'PricesGroup', position: 20 }]
+     TotalPrice;
+
+     ...
     ```
+
+    Click **Save** and **Activate**.
+
+3. Refresh the app window. There are two additional field groups showing price and date information.
+
+    ![App field Groups](images/unit1/t3-app-field-groups.png)
+
+
+## Step 5. Show the Bookings Table in a new section
+In this step you will add a new section that contains a table with booking information. This requires access to another entity `Booking` via an association and an additional metadata extension file.
+
+1. Open the metadata extension file for the Travel view `ZITC_AO_C_FE_TRAVEL`. In the facet annotation block add a new facet **Booking** with type `#LINEITEM_REFERENCE`. Add the code from line 7 to line 14 to the end of the `@UI.facet` section. Click **Save** and **Activate**.
+
     ```CDS
-    @EndUserText.label: 'Agency'
-    @ObjectModel.text.element: ['AgencyName']
-    AgencyID,
-    _Agency.Name as AgencyName,
+    ...
+    annotate view ZITC_AO_C_FE_TRAVEL with
+    {
+      ...
+      @UI.facet: [
+        ...
+        {
+          id: 'Booking',
+          purpose: #STANDARD,
+          type: #LINEITEM_REFERENCE,
+          label: 'Bookings',
+          position: 20,
+          targetElement: '_Booking'
+        }
+      ]
+    ...
+
     ```
+    Note the property `targetElement: _Booking` which references the association to the booking table that will be shown in the facet **Booking**. You can lookup the definition of `_Booking` in `ZITC_AO_C_FE_TRAVEL Projection View of Travel` in the **Data Definitions** folder.
+
+2. In the `Project Explorer` open the `Data Definitions` section, right-click on `ZITC_AO_I_FE_Booking Projection View for Booking` and create a new metadata extension file from the context menu. Enter `ZITC_AO_I_FE_Booking` in field **Name** and `Metadata Extension for Booking view` in field **Description**.
+
+    ![add Metadata Extension for Booking](images/unit1/t3-booking-metadata-extension-popup.png)
+
+    Click Buttons **Next** and **Finish**.
+
+3. In the metadata extension file `ZITC_AO_I_FE_Booking` use `@UI.lineItem` annotations to add some fields from the Booking view `ZITC_AO_I_FE_Booking Projection View for Booking` view to the bookings table. Replace the content of `ZITC_AO_I_FE_Booking` by the following code.
+
+    ```CDS
+    @Metadata.layer: #CORE
+
+    annotate view ZITC_AO_I_FE_Booking
+      with
+    {
+        @UI.lineItem: [ { position: 10 } ]
+        BookingID;
+
+        @UI.lineItem: [ { position: 20 } ]
+        BookingDate;
+
+        @UI.lineItem: [ { position: 30 } ]
+        CustomerID;
+
+        @UI.lineItem: [ { position: 40 } ]
+        CarrierID;
+
+        @UI.lineItem: [ { position: 50 } ]
+        ConnectionID;
+
+        @UI.lineItem: [ { position: 60 } ]
+        FlightDate;
+
+        @UI.lineItem: [ { position: 70 } ]
+        FlightPrice;
+
+    }
+    ```
+    Click **Save** and **Activate**.
+
+4. Change to the app preview and refresh the browser window. The booking table is now displayed in the new **Bookings** section of the object page.
+
+    ![App booking table](images/unit1/t3-app-booking-table.png)
+
+
+5. Instead of showing IDs for the fields Customer ID and Airline ID one would preferably show descriptions or names.
+
+    This will be made possible by using specific annotations which are  implemented within the projection view `ZITC_AO_I_FE_Booking`. Therefore open the projection view located in folder `Data Definitions` which contains the root view definitions for the booking entity.
+
+    Add the `@ObjectModel` and `@EndUserText` annotations to the fields as shown in the coding fragments below.
+
+    Annotation `@EndUserText.label` defines the column label for the related fields. Using annotation `@ObjectModel.text.element` controls the source of the content shown for the related field. Fields `CarrierID` and `CustomerID` will get their content by accessing the related field through the corresponding association.
+
     ```CDS
     @EndUserText.label: 'Customer'
     @ObjectModel.text.element: ['LastName']
     CustomerID,
     _Customer.LastName as LastName,
     ```
-    ```CDS
-    @EndUserText.label: 'Status'
-    OverallStatus,
-    ```
-    ```CDS
-    @EndUserText.label: 'Last Changed At'
-    LocalLastChangedAt,
-    ```
-    The semantic key for the view is `TravelID` and was automatically added by the generator. The content of the field will be highlighted (bold) with the ID underneath, and  the draft indicator will be shown in case a draft exists for the respective item.
-   You can find it in your ZITC_AO_C_FE_TRAVEL view: 
-    ```CDS
-   ...
-   @Search.searchable: true
-
-   @ObjectModel.semanticKey: ['TravelID']
-
-   define root view entity ZITC_AO_C_FE_TRAVEL
-   ...
-    ```
-   > Note: In the screenshot below the ID underneath the bold description in TravelID is missing. This is due to a temporary issue we had in the Preview during the time of recording.
-
-    After saving and activating the file and refreshing the application you will see the changed labels and content for the fields **Travel**, **Agency**, **Customer**, **Status** and **Last Changed At**.
-
-    ![refine ids](images/unit0/IDsLabels_2.png)
-
-
-## Step 6. Implement value help for selection fields Customer and Status
-When you click the value help icon of the selection field **Customer** in the filter bar, you get a dialog which provides the option to conditionally load data by the customer id. For better usability you would rather select customer data like name or address from a list.
-
-1. To implement the value help, assign the annotation `@Consumption.valueHelpDefinition` to the field `CustomerID` within the projection view `ZITC_AO_C_FE_TRAVEL`.
 
     ```CDS
-    @EndUserText.label: 'Customer'
-    @ObjectModel.text.element: ['LastName']
-    @Consumption.valueHelpDefinition: [{ entity : {name: '/DMO/I_Customer', element: 'CustomerID'  } }]
-    CustomerID,
-    _Customer.LastName as LastName,
+    @EndUserText.label: 'Airline'
+    @ObjectModel.text.element: ['CarrierName']
+    CarrierID,
+    _Carrier.Name as CarrierName,
     ```
-      The entity property `name` points to the data view and `element` contains the key for the selection.
+   Click **Save** and **Activate**.
 
 
-2. After saving, activating and refreshing your application, the field **Customer** provides the improved value help that allows a user friendly selection of customer data within the **Search and Select** tab. You are still able to do a conditional selection by choosing the **Define Conditions** tab on the dialog. By entering search values such as the **Last Name** and pressing the **Go** button, the resulting list is shown in the table. Selecting specific lines in the table and pressing the **OK** button will load a selected list of Travel items into list report.
+6. Change to the app preview and refresh the browser window. The booking table is now displayed in the new **Bookings** section of the object page with descriptions for **Customer** and **Airline**.
 
-    ![customer value help](images/unit0/CustomerValueHelp_1.png)
+    ![App booking table](images/unit1/t3-app-booking-table-descriptions.png)
 
-    Selection field **Status** also shows a conditional value help by default. From a user perspective it would be nice to get a list of values presented as a drop-down list since the number of different values is very limited.
+## Step 6. Airline pictures in Bookings table
+In this step you will add a picture with the airline logo in a new column at the beginning of the booking table.
 
-
-3. In the projection view for the Travel entity `ZITC_AO_C_FE_TRAVEL` the annotation for the value help has to be defined for the `OverallStatus` field. As with the field `CustomerID` (see above), the annotation `@Consumption.valueHelpDefinition` is used with properties `name` and `element` containing the appropriate values.
+1. To achieve this, open the metadata extension file `ZITC_AO_I_FE_Booking` and add the following code lines to the end of the annotation structure. The property `position` creates a new first column
 
     ```CDS
-    ...
-    @EndUserText.label: 'Status'
-    @Consumption.valueHelpDefinition: [{ entity : {name: 'ZITC_AO_I_FE_STAT', element: 'TravelStatusId'  } }]
-    OverallStatus,
-    ...
+
+        @UI.lineItem: [ { position: 05, label: ' ', value: '_Carrier.AirlinePicURL' } ]
+        _Carrier;
+
+        }
     ```
 
-    Save and activate the view.
+    Click **Save** and **Activate**.
 
+2. Change to the app preview and refresh the browser window. The booking table is now displayed with the airline pictures in the first column.
 
-4. Open the CDS view for the status description `ZITC_AO_I_FE_STAT`. Just above the view definition, insert an `@ObjectModel.resultSet.sizeCategory` annotation with value `#XS`. This results in a drop-down list.
-
-    ```CDS
-    ...
-    @EndUserText.label: 'Travel Status view entity'
-    @ObjectModel.resultSet.sizeCategory: #XS -- drop down menu for value help
-    define view ZITC_AO_I_FE_STAT
-    ...
-    ```
-
-    Save and activate the view.
-
-
-5. After refreshing the application the **Status** field is now a drop-down list. Select one or more of the available status codes and press the **Go** button to load the filtered list.
-
-    ![overall status fixed value help](images/unit0/StatusValueHelp_1.png)
-
-## Step 7. Description instead of Codes for the status field 
-The column **Status** currently shows the internal codes stored within `OverallStatus`, but instead the description for these codes shall be displayed.
-
-Although the related association is set correctly for `ZITC_AO_I_FE_TRAVEL` and descriptions are available through `ZITC_AO_I_FE_STAT`, the corresponding text annotation for the projection view is missing.
-
-1. You can check the association already available within the CDS view for the travel entity `ZITC_AO_I_FE_TRAVEL` in folder **Data Definitions** and the publication of this association to make it available for projection views (lines 6 & 14 in the code snippet below).
-
-    ```CDS
-    define root view entity ZITC_AO_I_FE_TRAVEL
-      as select from ZFE_ATRAV_######
-      association [0..1] to /DMO/I_Agency as _Agency on $projection.AgencyID = _Agency.AgencyID
-      association [0..1] to I_Currency as _Currency on $projection.CurrencyCode = _Currency.Currency
-      association [0..1] to /DMO/I_Customer as _Customer on $projection.CustomerID = _Customer.CustomerID
-      association [0..1] to ZITC_AO_I_FE_STAT as _TravelStatus on $projection.OverallStatus = _TravelStatus.TravelStatusId
-      composition [0..*] of ZITC_AO_I_FE_Booking as _Booking
-      {
-        key TRAVEL_UUID as TravelUUID,
-        ...
-
-        ...
-        _Customer,
-        _TravelStatus
-      }
-    ```
-
-
-2. Now the access to the status description has to be set within the projection view  `ZITC_AO_C_FE_TRAVEL`. Add the text annotation `@ObjectModel.text.element` for field `OverallStatus` as shown below (line 2). To load the description the corresponding field from the status description view has to be accessed by the association `_TravelStatus` (line 5).
-
-    ```CDS
-    @EndUserText.label: 'Status'
-    @ObjectModel.text.element: ['TravelStatusText']
-    @Consumption.valueHelpDefinition: [{ entity : {name: 'ZITC_AO_I_FE_STAT', element: 'TravelStatusId'  } }]
-    OverallStatus,
-    _TravelStatus.TravelStatusText as TravelStatusText,
-    ```
-    Save and activate the view.
-
-
-3. With these settings the description is displayed in the column **Status** but additionally, the code is shown within parentheses. You can use the `@UI.textArrangement` annotation with value `#TEXT_ONLY` to omit the key. Open the metadata extension file  `ZITC_AO_C_FE_TRAVEL` and add the text arrangement annotation to the field `OverallStatus` (line 3).
-
-    ```CDS
-    @UI.lineItem: [{ position: 80 }]
-    @UI.selectionField: [{ position: 30 }]
-    @UI.textArrangement: #TEXT_ONLY
-    OverallStatus;
-    ```
-    Save and activate the metadata extension.
-
-
-4. After refreshing your application you will see the status description within the **Status** column.
-
-    ![overall status text arrangement](images/unit0/StatusTextArrangement_1.png)
-
-## Step 8. Implement a conditional status emphasis
-
->This step requires implementing some additional backend logic. You can complete the remaining exercises in this course also if you skip this step. In this case you will not get the semantic coloring for the status field. Neither in the list report (travel list) nor in the object page (travel details).
-
-The values of the **Status** field can be semantically colored to visually differentiate the meaning. This can be achieved by using the criticality property for the lineItem annotation. 
-
-1. The criticality feature requires specific values for the different colors to be shown on the UI. Therefore a new field `OverallStatusCriticality` will be defined in the CDS view  `ZITC_AO_I_FE_TRAVEL`. This field will be filled with color codes derived from the values of the field `overall_status`. See below coding fragment which shows a case-structure to define the content of the new field `OverallStatusCriticality` within lines 5 to 10.
-
-    ```CDS
-    ...
-    description as Description,
-
-    overall_status as OverallStatus,
-    case overall_status
-      when 'O'  then 2    -- 'open'       | 2: yellow colour
-      when 'A'  then 3    -- 'accepted'   | 3: green colour
-      when 'X'  then 1    -- 'rejected'   | 1: red colour
-                else 0    -- 'nothing'    | 0: unknown
-    end                   as OverallStatusCriticality,
-
-    @Semantics.user.createdBy: true
-    created_by as CreatedBy,
-    ...
-    ```
-    Take over the case-structure into the CDS view  `ZITC_AO_I_FE_TRAVEL` just below the field `overall_status`. Save and activate the view.
-
-
-2. Adding a new field to the CDS view is a structural change which requires a recreation of the corresponding draft table `ZITC_AO_DTRAVEL`. This draft table contains all the fields of the CDS view.
-
-    This can easily be done by applying a quick fix within the behavior definition file `ZITC_AO_I_FE_TRAVEL` in folder **Core Data Services** > **Behavior Definitions**. Open this file in your editor and you will immediately see the error shown in the line where the draft table for the Travel entity is referenced.
-
-    Click on the light bulb icon on the left in that line or position your cursor on the draft table file name `ZITC_AO_DTRAVEL` and press **`CTRL + 1`**. The system proposes to recreate the draft table. By double-clicking on the proposal, the recreation of the table will be started.
-
-    ![overall status criticality](images/unit0/StatusCriticality_1.png)
-
-    As soon as the recreation is finished, you will see the draft table `ZITC_AO_DTRAVEL` loaded into the editor containing the new field `OverallStatusCriticality`.
-
-    ![overall status criticality](images/unit0/StatusCriticality_2.png)
-
-    Save and activate the draft table and then activate also the behavior definition file `ZITC_AO_I_FE_TRAVEL` which is still open in your editor. The error disappears as soon as the behavior definition is activated. If ADT still shows the error, close the behavior definition and open it again.
-
-
-3. To be able to use the new field within UI annotations you need to take it over to the projection view of the travel entity `ZITC_AO_C_FE_TRAVEL`. Insert the field `OverallStatusCriticality` just below the definition for the field `OverallStatus` (see line 7 in the coding fragment).
-
-    ```CDS
-    ...
-    @ObjectModel.text.element: ['TravelStatusText']
-    @Consumption.valueHelpDefinition: [{ entity : {name: 'ZITC_AO_I_FE_STAT', element: 'TravelStatusId'  } }]
-    OverallStatus,
-    _TravelStatus.TravelStatusText as TravelStatusText,
-
-    OverallStatusCriticality,
-
-    CreatedBy,
-    ...
-    ```
-
-    Save and activate the projection view.
-
-
-4. As a last step you need to add the criticality to the metadata extension for the Travel entity `ZITC_AO_C_FE_TRAVEL`.
-
-    This can be done by adding the property `criticality` with value  `OverallStatusCriticality` to the `@UI.lineItem` annotation of field `OverallStatus`  (see line 5 in the coding fragment).
-
-    ```CDS
-    ...
-    @UI.lineItem: [{ position: 70 }]
-    TotalPrice;
-
-    @UI.lineItem: [{ position: 80, criticality: 'OverallStatusCriticality' }]
-    @UI.selectionField: [{ position: 30 }]
-    @UI.textArrangement: #TEXT_ONLY
-    OverallStatus;
-
-    @UI.lineItem: [{ position: 90 }]
-    LocalLastChangedAt;
-    ...
-    ```
-
-    Save and activate the metadata extension file.
-
-    Refresh your application and reload the data by pressing **Go** in the list report. Now the content of column **Status** is shown in different colors depending on the values of the field.
-
-    ![overall status criticality](images/unit0/StatusCriticality_3.png)
-
+    ![App airline logos](images/unit1/t3-app-booking-airline-logos.png)
 
 ## Summary
 You have completed the exercise!
-In this unit, you have learned how to create a list report using ABAP CDS annotation.
+In this unit, you have learned how to create an object page using ABAP CDS annotation.
 
 ## Next Exercise
-[Creating an object page](../FE-ObjectPage.md)
+[Configure Page Map](./FE-PageMap.md)
