@@ -436,4 +436,4 @@ You have completed the exercise!
 In this unit, you have learned how to create a list report using ABAP CDS annotation.
 
 ## Next Exercise
-[Creating an object page](../FE-ObjectPage.md)
+[Creating an object page](./FE-ObjectPage.md)
