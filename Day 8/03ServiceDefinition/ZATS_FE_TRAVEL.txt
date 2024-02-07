@@ -1,0 +1,9 @@
+define service ZATS_FE_TRAVEL {
+  expose ZATS_C_FE_TRAVEL as Travel;
+  expose ZATS_C_FE_BOOKING as Booking;
+  expose ZATS_I_FE_CONN as Connection;
+  expose ZATS_I_FE_CARR as Airline;
+  expose ZATS_I_FE_FLIG as Flight;
+  expose I_Currency as Currency;
+  expose /DMO/I_Customer as Customer;
+}
