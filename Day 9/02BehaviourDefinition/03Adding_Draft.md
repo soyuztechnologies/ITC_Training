@@ -7,7 +7,6 @@
 
 * [Exercise 1 - Enable the draft handling in the base business object]
 * [Exercise 2 - Enable the draft handling in the projected business object]
-* [Exercise 3 - Enable Early Numbering for Travel and Booking]
 
 <a id="exercise-1"></a>
 # Exercise 1 - Enable the draft handling in the base business object
@@ -17,13 +16,13 @@ You will now enable the draft handling for the managed based business object (BO
 1.	Open the base behavior definition **ZITC_AO_I_FE_TRAVEL** where **AO** is your chosen suffix – of your business object.
 You can also use the shortcut `Ctrl+Shift+A` to open ABAP development object.
  
- ![OData](Images/Draft1.png)
+ ![OData](images/Draft1.png)
 
 2.	Add the addition **with draft;** after the **managed;** keyword in the header section to enable draft handling for your business object.
 
 ```with draft;```
 
- ![OData](Images/Draft2.png)
+ ![OData](images/Draft2.png)
 
 3.	Specify the draft table for the travel entity, where the draft travel data will be persisted as show on the screenshot.
 
@@ -36,7 +35,7 @@ Do not forget to replace the placeholder **AO** with your chosen suffix.
 
 `draft table zdtravel_AO`
 
- ![OData](Images/draft3.png)
+ ![OData](images/draft3.png)
 
 4.	Do the same for the booking entity – i.e. define the draft table where the draft booking data will be persisted.
 
@@ -47,7 +46,7 @@ Do not forget to replace the placeholder **AO** with your chosen suffix.
 
 `draft table zdbook_AO`
 
- ![OData](Images/Draft4.png)
+ ![OData](images/Draft4.png)
 
 5.	Now, you will create the draft table **zdtravel_AO** where **AO** is your chosen suffix, to store the draft data for the travel entity.
 
@@ -55,16 +54,16 @@ The ADT `Quick Fix` feature can be used to generate the draft table.
 
 For this, set the cursor on the table name, and press **Ctrl+1** to star the `Quick Fix` dialog.
 
- ![OData](Images/Draft5.png)
+ ![OData](images/Draft5.png)
 
 6.	Leave the defaulted values as they are in the appearing dialog and choose **Next**. 
 
-![OData](Images/draft6.png)
+![OData](images/draft6.png)
  
 7.	Choose **Finish** to generate the table.
 The draft table is generated based on the defined model and shown in the appropriate editor.
  
- ![OData](Images/draft7.png)
+ ![OData](images/draft7.png)
  
 **Note: Whenever you change the BO data model, you can again use the ADT 'Quick Fix (Ctrl+1)' to generate again the draft table definition. This will update the table definition.**
 
@@ -72,30 +71,30 @@ The draft table is generated based on the defined model and shown in the appropr
 
 9.	Now also create the draft table for the booking entity **zdbook_AO** using the ADT `Quick Fix` **(Ctrl+1)**'.
  
- ![OData](Images/draft8.png)
+ ![OData](images/draft8.png)
  
- ![OData](Images/Draft9.png)
+ ![OData](images/Draft9.png)
  
- ![OData](Images/draft10.png)
+ ![OData](images/draft10.png)
 
 10.	Save, activate and close the table.
 Some warnings are shown in the `Problem view.` You will now work on removing them.
  
- ![OData](Images/draft11.png)
+ ![OData](images/draft11.png)
 
 11.	Replace the association definition in the base behavior definition to solve the warnings indicating that the associations are implicitly draft enabled as this is a draft enabled business object.
 For this, use the code snippet provided below to replace the one currently defined in the `travel` behavior definition as shown on the screenshot.
 
 `association _Booking { create; with draft; }`
 
- ![OData](Images/draft12.png)
+ ![OData](images/draft12.png)
  
 12.	Do the same for the **_Travel** association of the booking entity.
 For this, use the code snippet provided below to replace the one currently defined in the booking behavior definition as shown on the screenshot.
 
  `association _Travel { with draft; }`
 
-  ![OData](Images/draft13.png)
+  ![OData](images/draft13.png)
 
 13.	Specify a `total etag field` in the `root` entity of your BO. This is required to identify changes to `active` instances in cases where the durable lock has expired. The field **LastChangedAt** will be used for the purpose in the present scenario.
 
@@ -103,7 +102,7 @@ For this, use the code snippet provided below to replace the one currently defin
 
 `total etag LastChangedAt`
 
- ![OData](Images/draft14.png)
+ ![OData](images/draft14.png)
  
 14.	When a draft instance is going to be activated, the SAP Fiori elements UI calls the `draft determine action` **prepare** in the backend. This call takes place in a separate `OData changeset` to allow for saving the state messages even in case the activation fails due to failing validations.
 In order to execute the validations during prepare, you need to assign them to the **draft determine action prepare** trigger.
@@ -121,7 +120,7 @@ For this, insert the code snippet provided below into the travel behavior defini
   
  ```
 
-  ![OData](Images/draft15.png)
+  ![OData](images/draft15.png)
 
 15.	Save and activate the changes.
 
@@ -133,7 +132,7 @@ You will now enable the draft handling for the managed based business object (BO
 
 You can also use the shortcut **Ctrl+Shift+A** to open ABAP development object.
 
- ![OData](Images/draft2.1.png)
+ ![OData](images/draft2.1.png)
 
 2.	Enable the draft handling in the projection, by adding the statement **use draft;** in the header section.
 
@@ -141,7 +140,7 @@ Otherwise the projection would behave like if no draft has been enabled for the 
 
 `use draft;`
 
- ![OData](Images/draft2.2.png)
+ ![OData](images/draft2.2.png)
 
 3.	Enable the draft handling for the associations exposed in the projection. For this, use the code snippets provided below to replace the respective statements in the behavior definition projection as shown on the screenshot.
 
@@ -153,7 +152,7 @@ Code snippet for the `booking` entity:
 
 `use association _Travel { with draft; }`
 
- ![OData](Images/draft2.3.png)
+ ![OData](images/draft2.3.png)
 
 4.	Save and activate the behavior definition projection.
 You are now done with the behavior implementations and can run and check the enhanced SAP Fiori elements `Travel App`.
@@ -163,7 +162,7 @@ You are now done with the behavior implementations and can run and check the enh
 Press **Go** on the UI to load the back-end data.
 First thing you will notice is a new filter field that allows for filtering on the Editing Status is now displayed in the filter area.
  
-![OData](Images/draft2.4.png)
+![OData](images/draft2.4.png)
 
 #### Solution 
 
