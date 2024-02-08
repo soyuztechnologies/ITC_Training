@@ -1,0 +1,21 @@
+projection;
+use draft;
+
+define behavior for ZATS_C_FE_TRAVEL alias Travel
+
+{
+  use create;
+  use update;
+  use delete;
+
+  use association _Booking { create; with draft; }
+}
+
+define behavior for ZATS_C_FE_BOOKING alias Booking
+
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+}

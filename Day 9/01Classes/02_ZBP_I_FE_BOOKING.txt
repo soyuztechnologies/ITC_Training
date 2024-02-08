@@ -1,0 +1,38 @@
+CLASS ZBP_I_FE_BOOKING DEFINITION
+ public
+  abstract
+  final
+  for behavior of ZATS_I_FE_TRAVEL.
+
+public section.
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS ZBP_I_FE_BOOKING IMPLEMENTATION.
+ENDCLASS.
+
+
+
+
+
+
+Local Type(Create Local Class)
+
+*"* use this source file for the definition and implementation of
+*"* local helper classes, interface definitions and type
+*"* declarations
+CLASS LCL_HANDLER DEFINITION INHERITING FROM CL_ABAP_BEHAVIOR_HANDLER.
+  PRIVATE SECTION.
+    METHODS:
+      CALCULATEBOOKINGID FOR DETERMINE ON SAVE
+        IMPORTING
+          KEYS FOR  Booking~CalculateBookingID .
+ENDCLASS.
+
+CLASS LCL_HANDLER IMPLEMENTATION.
+  METHOD CALCULATEBOOKINGID.
+  ENDMETHOD.
+ENDCLASS.
