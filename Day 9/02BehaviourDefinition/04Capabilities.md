@@ -336,8 +336,9 @@ ENDCLASS.
 ```
 
 Replace AO with your initials 
+```
 
-4.	Click the activation button or use the shortcut `Ctrl + F3` to activate the behavior definition.
+2.	Click the activation button or use the shortcut `Ctrl + F3` to activate the behavior definition.
 
 # Exercise 3 - Implementing Validations
 
