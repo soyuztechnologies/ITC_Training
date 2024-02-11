@@ -72,7 +72,7 @@ Click on create behavior implementation to create the class.
 ```
   METHOD augment_create.
   
-   DATA: travel_create TYPE TABLE FOR CREATE ZITC_AO_C_FE_TRAVEL.
+    DATA: travel_create TYPE TABLE FOR CREATE zitc_ao_i_fe_travel.
 
     travel_create = CORRESPONDING #( entities ).
     LOOP AT travel_create ASSIGNING FIELD-SYMBOL(<travel>).
@@ -80,7 +80,8 @@ Click on create behavior implementation to create the class.
       <travel>-%control-overallstatus = if_abap_behv=>mk-on.
     ENDLOOP.
 
-    MODIFY AUGMENTING ENTITIES OF ZITC_AO_I_FE_TRAVEL ENTITY Travel CREATE FROM travel_create.
+    MODIFY AUGMENTING ENTITIES OF zitc_ao_i_fe_travel ENTITY Travel CREATE FROM travel_create.
+
   ENDMETHOD.
   
   ```
@@ -96,6 +97,20 @@ Click on create behavior implementation to create the class.
 # Exercise 2 - Implementing the Action createTravelByTemplate
 
 This action provides a template for creating a new travel based on an already existing travel instance.
+
+RAP actions are non-standard RAP BO operations that modify the state of an entity instance. The custom logic must be implemented in the RAP handler method FOR MODIFY.
+
+The following kinds of actions are available:
+
+non-factory actions:
+Non-factory actions implement custom logic that changes existing entity instances.
+Instance-bound non-factory actions can be declared as repeatable. A repeatable action can be executed multiple times on the same RAP BO entity instance in the same ABAP EML or OData request.
+
+factory actions:
+Factory actions can be used to create RAP BO entity instances.
+A default factory action is a special kind of factory action.
+save actions
+RAP save actions can be non-factory actions or factory actions. RAP save actions are characterized by the syntax addition save, which has the effect that the action in question can only be executed during the RAP save sequence. Any attempt to execute a RAP save action during the RAP interaction phase results in a short dump.
 
 Actions are specified as non-standard operations in behavior definitions by using the following syntax:
 
@@ -176,70 +191,37 @@ ENDCLASS.
 CLASS lhc_travel IMPLEMENTATION.
 
   METHOD createTravelByTemplate.
-    SELECT MAX( travel_id ) FROM zitc_atrav INTO @DATA(lv_travel_id). "#EC CI_NOWHERE
+      
+      data : lt_travel_create type TABLE FOR CREATE zitc_ao_i_fe_travel.
 
-    READ ENTITIES OF ZITC_AO_I_FE_TRAVEL IN LOCAL MODE
-      ENTITY travel
-         ALL FIELDS WITH CORRESPONDING #( keys )
-         RESULT    DATA(lt_read_result)
-         FAILED    failed
-         REPORTED  reported.
+      READ ENTITIES OF zitc_ao_i_fe_travel IN LOCAL MODE
+        ENTITY Travel
+          ALL FIELDS
+          WITH CORRESPONDING #( keys )
+        RESULT DATA(lt_travel)
+        FAILED DATA(lt_failed).
 
-    DATA(lv_today) = cl_abap_context_info=>get_system_date( ).
+      LOOP AT lt_travel ASSIGNING FIELD-SYMBOL(<fs_existing>).
 
-    DATA lt_create TYPE TABLE FOR CREATE ZITC_AO_I_FE_TRAVEL\\travel.
+          data(ls_key)  = keys[ KEY entity %key = <fs_existing>-%key ].
 
-    lt_create = VALUE #( FOR row IN  lt_read_result INDEX INTO idx
+          append VALUE #( %cid = ls_key-%cid
+                          %is_draft = ls_key-%param-%is_draft
+                          %data = CORRESPONDING #( <fs_existing> EXCEPT TravelUUID travelid )
+          ) to lt_travel_create ASSIGNING FIELD-SYMBOL(<fs_create>).
 
-                             ( %cid = row-TravelUUID
-                               TravelUUID     = cl_uuid_factory=>create_system_uuid(  )->create_uuid_x16(  )
-                               travelid      = lv_travel_id + idx
-                               agencyid      = row-agencyid
-                               customerid    = row-customerid
-                               begindate     = lv_today
-                               enddate       = lv_today + 30
-                               bookingfee    = row-bookingfee
-                               totalprice    = row-totalprice
-                               currencycode  = row-currencycode
-                               description    = 'Created by Anubhav'
-                               OverallStatus = 'O' ) ). " Open
+          select SINGLE max( travel_id ) into @<fs_create>-TravelID from zitc_atrav.
+          <fs_create>-TravelID = <fs_create>-TravelID + 1.
 
 
-    MODIFY ENTITIES OF ZITC_AO_I_FE_TRAVEL IN LOCAL MODE
-        ENTITY travel
-           CREATE FIELDS (
-                              TravelUUID
-                              travelid
-                              agencyid
-                              customerid
-                              begindate
-                              enddate
-                              bookingfee
-                              totalprice
-                              currencycode
-                              description
-                              OverallStatus )
-           WITH lt_create
-         MAPPED   mapped
-         FAILED   DATA(failed_modify)
-         REPORTED DATA(reported_modify).
+      ENDLOOP.
 
-    failed-travel   = CORRESPONDING #( BASE ( failed-travel )   failed_modify-travel   MAPPING TravelUUID = %cid ).
-    reported-travel = CORRESPONDING #( BASE ( reported-travel ) reported_modify-travel MAPPING TravelUUID = %cid ).
-
-
-*    READ ENTITIES OF ZITC_AO_I_FE_TRAVEL IN LOCAL MODE
-*      ENTITY travel
-*        ALL FIELDS WITH
-*        CORRESPONDING #( mapped-travel )
-*    RESULT DATA(lt_read_created).
-*
-*    mapped-travel = VALUE #( FOR key IN  mapped-travel  INDEX INTO idx
-*                               ( %cid_ref = keys[ KEY entity %key = key-%cid ]-%cid_ref
-*                                 %key     = key-%cid
-*                                 %param-%tky   = key-%tky ) ) .
-*
-*    result = CORRESPONDING #( result FROM lt_read_created USING KEY entity  %key = %param-%key MAPPING %param = %data EXCEPT * ).
+      MODIFY ENTITIES OF zitc_ao_i_fe_travel IN LOCAL MODE
+        ENTITY Travel
+          Create FIELDS ( TravelID BeginDate EndDate CustomerID AgencyID BookingFee TotalPrice CurrencyCode )
+              WITH lt_travel_create
+          MAPPED mapped
+        FAILED lt_failed.
 
 
 
