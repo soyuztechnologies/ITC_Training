@@ -20,31 +20,31 @@ We will be using Business Application Studio to create our application. We will 
 
 1. Click **Start from template**.
 
-    ![](images/unit3/img_0.png)
+    ![](fiori/unit3/img_0.png)
 
 
 
 2. Click  **SAP Fiori application** from **Select Template and Target Location** Page.
 
-    ![](images/unit3/img_000.png)
+    ![](fiori/unit3/img_000.png)
 
 
 
 3. Click **Start** to go to **Floorplan Selection** page.
 
-    ![](images/unit3/img_001.png)
+    ![](fiori/unit3/img_001.png)
 
 
 
 4. Select **Overview Page** from **Floorplan Selection** page.
 
-    ![](images/unit3/img_002.png)
+    ![](fiori/unit3/img_002.png)
 
 
 
 5. Click **Next**.
 
-    ![](images/unit3/img_003.png)
+    ![](fiori/unit3/img_003.png)
 
 
 
@@ -54,7 +54,7 @@ We will be using Business Application Studio to create our application. We will 
     * From **Service**, select **ZITC_FE_BOOKING_AO * OData V2**
     * Click **Next**
 
-    ![](images/unit3/img_004.png)
+    ![](fiori/unit3/img_004.png)
     **Note:** Choose the service you created during week 1 unit 5.
 
 
@@ -62,7 +62,7 @@ We will be using Business Application Studio to create our application. We will 
     * From **Filter Entity**, select **BookingType**.
     * Click  **Next**.
 
-    ![](images/unit3/img_005.png)
+    ![](fiori/unit3/img_005.png)
 
 
 
@@ -73,7 +73,7 @@ We will be using Business Application Studio to create our application. We will 
     * Set **Project folder path** to **/home/user/projects**.
     * Click **Finish**.
 
-    ![](images/unit3/img_006.png)
+    ![](fiori/unit3/img_006.png)
       **Note:** In project folder path '/home/user/projects' is selected. You can choose a different path but make sure to select the same path to create all applications during this course.
    
       **Note.** If selected project folder path is not opened by default, you can do so by going to **File** menu then select **Open Workspace** and choose the selected folder.<br>
@@ -85,24 +85,24 @@ Let’s start by creating an Analytical card that will help us understand the Da
 
 1. Click on  **traveloverview** with the right mouse button.
 
-    ![](images/unit3/img_007.png)
+    ![](fiori/unit3/img_007.png)
 
 
 2. Click  **SAP Fiori tools - Open Guided Development**
    >⚠️ Firefox currently has a bug that it does not treat subdomains of localhost as secure. When you open "Guided Development" or another tool of the Fiori tools and the tab stays empty please refresh the page by pressing F5 or click the reload button of the browser. After reloading the page the tool should show up.
     
-   ![](images/unit3/img_008.png)
+   ![](fiori/unit3/img_008.png)
 
 
 3. Click **Add an analytical card to an overview page**
 
-    ![](images/unit3/img_009.png)
+    ![](fiori/unit3/img_009.png)
 
 
 
 4. Click **Start Guide**.
 
-    ![](images/unit3/img_010.png)
+    ![](fiori/unit3/img_010.png)
 
 
 ### Guided Development Step 1  
@@ -111,7 +111,7 @@ We start by generating a UI Chart annotation. In this annotation, we will supply
 
 1. Select **BookingType** as **Entity Type**.
 
-    ![](images/unit3/img_011.png)
+    ![](fiori/unit3/img_011.png)
 
 
 2. Now we will provide settings required to generate the UI Chart annotation.
@@ -122,7 +122,7 @@ We start by generating a UI Chart annotation. In this annotation, we will supply
     * From **Chart Type**, select **Column**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_012.png)
+    ![](fiori/unit3/img_012.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.Chart Annotation.
    
@@ -152,12 +152,12 @@ We start by generating a UI Chart annotation. In this annotation, we will supply
    ```
    Generated Annotation
 
-    ![](images/unit3/img_013.png)
+    ![](fiori/unit3/img_013.png)
 
 
 3. Click **Next**
 
-    ![](images/unit3/img_014.png)
+    ![](fiori/unit3/img_014.png)
 
 ### Guided Development Step 2
 
@@ -165,7 +165,7 @@ This step is to generate the presentation variant. Presentation variant can be u
 
 1.  Click **Next**
 
-    ![](images/unit3/img_015.png)
+    ![](fiori/unit3/img_015.png)
 
 
 ### Guided Development Step 3
@@ -174,7 +174,7 @@ In this step we’ll create data point annotation for the KPI header. We will us
 
 1. From **Entity Type Property**, select **FlightPrice**.
 
-    ![](images/unit3/img_016.png)
+    ![](fiori/unit3/img_016.png)
 
 
 2. Enter following in the **DataPoint Parameters** section,
@@ -182,7 +182,7 @@ In this step we’ll create data point annotation for the KPI header. We will us
     * Enter **Flight Price** as **DataPoint Title**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_017.png)
+    ![](fiori/unit3/img_017.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataPoint Annotation.
 
@@ -196,12 +196,12 @@ In this step we’ll create data point annotation for the KPI header. We will us
      ```
    Generated Annotation
 
-    ![](images/unit3/img_018.png)
+    ![](fiori/unit3/img_018.png)
 
 
 3. Click **Next**
 
-    ![](images/unit3/img_019.png)
+    ![](fiori/unit3/img_019.png)
 
 
 ### Guided Development Step 4
@@ -210,7 +210,7 @@ In this step we will create a navigation from this analytical card to analytical
 
 1. Enter **ToBookingAnalysis** as **Qualifier**
 
-    ![](images/unit3/img_020.png)
+    ![](fiori/unit3/img_020.png)
 
 
 2. Here we are creating an **UI.DataFieldForIntentBasedNavigation** annotation.
@@ -218,7 +218,7 @@ In this step we will create a navigation from this analytical card to analytical
     * Enter **analysis** as **Action**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_021.png)
+    ![](fiori/unit3/img_021.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataFieldForIntentBasedNavigation Annotation.
 
@@ -235,12 +235,12 @@ In this step we will create a navigation from this analytical card to analytical
 
    Generated Annotation
 
-   ![](images/unit3/img_022.png)
+   ![](fiori/unit3/img_022.png)
 
 
 3. Click **Next**
 
-    ![](images/unit3/img_023.png)
+    ![](fiori/unit3/img_023.png)
 
 
 
@@ -250,7 +250,7 @@ We are now on the final step to generate the card manifest settings. Here we wil
 
 1. Enter **CARD_000** as card ID then select **V2** as the **OData Version**.
 
-    ![](images/unit3/img_024.png)
+    ![](fiori/unit3/img_024.png)
 
 
 2. Enter the following for the card,
@@ -264,7 +264,7 @@ We are now on the final step to generate the card manifest settings. Here we wil
 
 3. Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_025.png)
+    ![](fiori/unit3/img_025.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated card manifest setting.
 
@@ -285,13 +285,13 @@ We are now on the final step to generate the card manifest settings. Here we wil
 
    Generated card configuration:
 
-    ![](images/unit3/img_026.png)
+    ![](fiori/unit3/img_026.png)
 
 
 
 4. Click **Exit Guide**
 
-    ![](images/unit3/img_027.png)
+    ![](fiori/unit3/img_027.png)
 
 
 
@@ -301,24 +301,24 @@ We have added an analytical card with column chart in our Travel Overview app. L
 
 1. Click on  **traveloverview** with the right mouse button.
 
-    ![](images/unit3/img_028.png)
+    ![](fiori/unit3/img_028.png)
 
 
 2. Click  **Preview Application**
 
-    ![](images/unit3/img_029.png)
+    ![](fiori/unit3/img_029.png)
 
 
 
 3. Click **start fiori run --open 'test/flpSandbox.html#traveloverview-tile**
 
-    ![](images/unit3/img_030.png)
+    ![](fiori/unit3/img_030.png)
 
 
 
 4. Application Preview
 
-    ![](images/unit3/img_1111.png)
+    ![](fiori/unit3/img_1111.png)
 
 
 ## Step 3. Add OData V4 service from Service Manager
@@ -327,32 +327,32 @@ In Overview page, you can create cards using OData V4 service as well. We will n
 
 1. Click on  **manifest.json** with the right mouse button.
 
-    ![](images/unit3/img_031.png)
+    ![](fiori/unit3/img_031.png)
 
 
 2. Click  **Open Service Manager**
 
-    ![](images/unit3/img_032.png)
+    ![](fiori/unit3/img_032.png)
 
 
 3. Click **Add Service**
 
-    ![](images/unit3/img_033.png)
+    ![](fiori/unit3/img_033.png)
 
 
 4. Click **Select a service** dropdown
 
-    ![](images/unit3/img_034.png)
+    ![](fiori/unit3/img_034.png)
 
 
 5. Click **ZUI_FE_TRAVEL_######_O4 > ZFE_TRAVEL_###### (0001) - odata v4**
 
-    ![](images/unit3/img_035.png)
+    ![](fiori/unit3/img_035.png)
    **Note.** Choose the OData V4 service you created during week 1 unit 5.
    <br><br>
 6. Click **Add**
 
-    ![](images/unit3/img_036.png)
+    ![](fiori/unit3/img_036.png)
 
 ## Step 4. Add Annotation for a Service
 
@@ -360,30 +360,30 @@ We will add a new annotation file for the added OData V4 service.
 
 1. Click **Annotation File Manager**
 
-    ![](images/unit3/img_037.png)
+    ![](fiori/unit3/img_037.png)
 
 
 2. Click **Select service** dropdown
 
-    ![](images/unit3/img_038.png)
+    ![](fiori/unit3/img_038.png)
 
 
 3. Click  **zui_fe_travel_######_o4**
 
-    ![](images/unit3/img_039.png)
+    ![](fiori/unit3/img_039.png)
 
 
 4. Click **Create Local Annotation File**
 
-    ![](images/unit3/img_040.png)
+    ![](fiori/unit3/img_040.png)
 
 
 5. Click **Create**
 
-    ![](images/unit3/img_041.png)
+    ![](fiori/unit3/img_041.png)
 
       Generated Annotation file in the project:
-   ![](images/unit3/img_042.png)
+   ![](fiori/unit3/img_042.png)
    **Note.** Close the guided development page for the added service to reflect during card creation.
 
 ## Step 5. Add a V4 Table Card
@@ -393,23 +393,23 @@ Now that we have added an OData V4 service, we will create a table card to displ
 
 1. Click on **traveloverview** with the right mouse button.
 
-    ![](images/unit3/img_043.png)
+    ![](fiori/unit3/img_043.png)
 
 
 2. Click **SAP Fiori tools - Open Guided Development**
 
-    ![](images/unit3/img_044.png)
+    ![](fiori/unit3/img_044.png)
 
 
 3. Click **Add a table card to an overview page**
 
-    ![](images/unit3/img_045.png)
+    ![](fiori/unit3/img_045.png)
 
 
 
 4. Click **Start Guide**
 
-    ![](images/unit3/img_046.png)
+    ![](fiori/unit3/img_046.png)
 
 
 ### Guided Development Step 1
@@ -418,17 +418,17 @@ We will start by creating UI.DataPoint annotation for different travel start dat
 
 1. Select **zui_fe_travel_######_o4** from **Model** dropdown. Note, you need to close the guided development tab after you added the additional service and reopen it again.
 
-    ![](images/unit3/img_047.png)
+    ![](fiori/unit3/img_047.png)
 
 
 2. Select **TravelType** from **Entity Type** dropdown.
 
-    ![](images/unit3/img_048.png)
+    ![](fiori/unit3/img_048.png)
 
 
 3. Select **BeginDate** from **Entity Type Property**.
 
-    ![](images/unit3/img_049.png)
+    ![](fiori/unit3/img_049.png)
 
 
 4. Enter following for the DataPoint Parameters for **Open/In Progress** travel status,
@@ -437,7 +437,7 @@ We will start by creating UI.DataPoint annotation for different travel start dat
     * Select **Critical** from **DataPoint Criticality** dropdown.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_050.png)
+    ![](fiori/unit3/img_050.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataPoint Annotation.
 
@@ -452,7 +452,7 @@ We will start by creating UI.DataPoint annotation for different travel start dat
    ```
    Generated Annotation - Open/In Progress:
 
-    ![](images/unit3/img_051.png)
+    ![](fiori/unit3/img_051.png)
 
 
 5. Enter following for the DataPoint Parameters for **Accepted** travel status,
@@ -461,7 +461,7 @@ We will start by creating UI.DataPoint annotation for different travel start dat
     * Select **Positive** from **DataPoint Criticality** dropdown.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_052.png)
+    ![](fiori/unit3/img_052.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataPoint Annotation.
 
@@ -482,7 +482,7 @@ We will start by creating UI.DataPoint annotation for different travel start dat
     * Select **Negative** from **DataPoint Criticality** dropdown.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_053.png)
+    ![](fiori/unit3/img_053.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataPoint Annotation.
 
@@ -498,7 +498,7 @@ We will start by creating UI.DataPoint annotation for different travel start dat
 
 7. Click **Next**.
 
-    ![](images/unit3/img_054.png)
+    ![](fiori/unit3/img_054.png)
 
 ### Guided Development Step 2
 
@@ -511,7 +511,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
     * Enter **Travel** as **Label**.
     * Click **Insert Snippet (formerly Apply)**.
 
-    ![](images/unit3/img_055.png)
+    ![](fiori/unit3/img_055.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataField Annotation.
 
@@ -527,7 +527,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
    ```
 
    Generated Annotation:
-    ![](images/unit3/img_056.png)
+    ![](fiori/unit3/img_056.png)
 
 
 2. Enter the following in New Column Parameters section,
@@ -535,7 +535,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
     * Enter **Customer** as **Label**
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_057.png)
+    ![](fiori/unit3/img_057.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataField Annotation appended to the annotation generated in the last step.
 
@@ -547,12 +547,12 @@ We have the data point annotation for the beginDate property. Let's start by cre
    ```
 
    Generated Annotation:
-    ![](images/unit3/img_058.png)
+    ![](fiori/unit3/img_058.png)
 
 
 3. Clear Property and Label fields. Then select **UI.DataPoint#TravelBeginDateOpenInProgress** as **DataPoint Qualifier** then click **Insert Snippet (formerly Apply)**.
 
-    ![](images/unit3/img_059.png)
+    ![](fiori/unit3/img_059.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataFieldForAnnotation Annotation appended to the annotation generated in the last step.
 
@@ -564,7 +564,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
 
    Generated Annotation:
 
-    ![](images/unit3/img_060.png)
+    ![](fiori/unit3/img_060.png)
 
 
 4. Click on the **Reset** button, then enter the following in New Column Parameters section,
@@ -573,7 +573,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
     * Enter **Travel** as **Label**.
     * Click **Insert Snippet (formerly Apply)**.
 
-    ![](images/unit3/img_061.png)
+    ![](fiori/unit3/img_061.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataField Annotation.
 
@@ -589,7 +589,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
    ```
    Generated Annotation:
 
-    ![](images/unit3/img_062.png)
+    ![](fiori/unit3/img_062.png)
 
 
 5. Enter the following in New Column Parameters section,
@@ -597,7 +597,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
     * Enter **Customer** as **Label**
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_063.png)
+    ![](fiori/unit3/img_063.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataField Annotation appended to the annotation generated in the last step.
 
@@ -610,17 +610,17 @@ We have the data point annotation for the beginDate property. Let's start by cre
 
    Generated Annotation:
 
-    ![](images/unit3/img_064.png)
+    ![](fiori/unit3/img_064.png)
 
 
 6. Clear Property and Label fields. Then select **UI.DataPoint#TravelBeginDateAccepted** as **DataPoint Qualifier**.
 
-    ![](images/unit3/img_065.png)
+    ![](fiori/unit3/img_065.png)
 
 
 7. Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_066.png)
+    ![](fiori/unit3/img_066.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataFieldForAnnotation Annotation appended to the annotation generated in the last step.
 
@@ -632,7 +632,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
 
    Generated Annotation:
 
-    ![](images/unit3/img_067.png)
+    ![](fiori/unit3/img_067.png)
 
 
 8. Enter the following in New Column Parameters section,
@@ -641,7 +641,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
     * Enter **Travel** as **Label**.
     * Click **Insert Snippet (formerly Apply)**.
 
-    ![](images/unit3/img_068.png)
+    ![](fiori/unit3/img_068.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataField Annotation.
 
@@ -657,7 +657,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
    ```
 
    Generated Annotation:
-    ![](images/unit3/img_069.png)
+    ![](fiori/unit3/img_069.png)
 
 
 9. Enter the following in New Column Parameters section,
@@ -665,7 +665,7 @@ We have the data point annotation for the beginDate property. Let's start by cre
     * Enter **Customer** as **Label**
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_070.png)
+    ![](fiori/unit3/img_070.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataField Annotation appended to the annotation generated in the last step.
 
@@ -678,11 +678,11 @@ We have the data point annotation for the beginDate property. Let's start by cre
 
    Generated Annotation:
 
-    ![](images/unit3/img_071.png)
+    ![](fiori/unit3/img_071.png)
 
 
 10. Clear Property and Label fields. Then select **UI.DataPoint#TravelBeginDateRejected** as **DataPoint Qualifier** then click **Insert Snippet (formerly Apply)**.
-   ![](images/unit3/img_072.png)
+   ![](fiori/unit3/img_072.png)
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.DataFieldForAnnotation Annotation appended to the annotation generated in the last step.
    
    ```
@@ -693,12 +693,12 @@ We have the data point annotation for the beginDate property. Let's start by cre
    
    Generated Annotation:
    
-   ![](images/unit3/img_073.png)
+   ![](fiori/unit3/img_073.png)
 
 
 11. Click **Next**
 
-    ![](images/unit3/img_074.png)
+    ![](fiori/unit3/img_074.png)
 
 
 ### Guided Development Step 3
@@ -711,7 +711,7 @@ In this step, we will create 3 selection variants for each status **Accepted**, 
     * Enter **Open** as **Filter Value**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_075.png)
+    ![](fiori/unit3/img_075.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.SelectionVariant annotation.
 
@@ -740,12 +740,12 @@ In this step, we will create 3 selection variants for each status **Accepted**, 
 
    Generated Annotation:
 
-    ![](images/unit3/img_076.png)
+    ![](fiori/unit3/img_076.png)
 
 
 2. Enter **In Progress** in **Filter Value** then click **Insert Snippet (formerly Apply)**.
 
-    ![](images/unit3/img_077.png)
+    ![](fiori/unit3/img_077.png)
 
    After clicking on Insert Snippet (formerly Apply), this record will be appended to annotation generated in last step.
 
@@ -765,7 +765,7 @@ In this step, we will create 3 selection variants for each status **Accepted**, 
    ```
    Generated Annotation:
 
-    ![](images/unit3/img_078.png)
+    ![](fiori/unit3/img_078.png)
 
 
 3. Enter the following in the **Filter Values** section.
@@ -774,7 +774,7 @@ In this step, we will create 3 selection variants for each status **Accepted**, 
     * Enter **Accepted** as **Filter Value**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_079.png)
+    ![](fiori/unit3/img_079.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.SelectionVariant annotation.
    ```
@@ -802,7 +802,7 @@ In this step, we will create 3 selection variants for each status **Accepted**, 
 
    Generated Annotation:
 
-    ![](images/unit3/img_080.png)
+    ![](fiori/unit3/img_080.png)
 
 
 4. Enter the following in the **Filter Values** section.
@@ -811,7 +811,7 @@ In this step, we will create 3 selection variants for each status **Accepted**, 
     * Enter **Rejected** as **Filter Value**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_081.png)
+    ![](fiori/unit3/img_081.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.SelectionVariant annotation.
    ```
@@ -838,13 +838,13 @@ In this step, we will create 3 selection variants for each status **Accepted**, 
    ```
    Generated annotation:
 
-    ![](images/unit3/img_082.png)
+    ![](fiori/unit3/img_082.png)
 
 
 
 5. Click **Next**
 
-    ![](images/unit3/img_083.png)
+    ![](fiori/unit3/img_083.png)
 
 
 
@@ -855,7 +855,7 @@ In this step, we will configure navigation to the list report application that w
 
 1. Enter **ToTravelManage** as **Qualifier**
 
-    ![](images/unit3/img_084.png)
+    ![](fiori/unit3/img_084.png)
 
 
 2. Enter the following for the **UI.DataFieldForIntentBasedNavigation** annotation.
@@ -863,7 +863,7 @@ In this step, we will configure navigation to the list report application that w
     * Enter **manage** as **Action**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_085.png)
+    ![](fiori/unit3/img_085.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated UI.Identification annotation.
 
@@ -880,12 +880,12 @@ In this step, we will configure navigation to the list report application that w
 
    Generated Annotation:
 
-    ![](images/unit3/img_086.png)
+    ![](fiori/unit3/img_086.png)
 
 
 3. Click **Next**
 
-    ![](images/unit3/img_087.png)
+    ![](fiori/unit3/img_087.png)
 
 
 ### Guided Development Step 5
@@ -897,7 +897,7 @@ In this step we will provide card manifest settings.
     * Enter **CARD_001** as **Card ID**
     * Select **V4** from **OData Version** dropdown.
 
-    ![](images/unit3/img_088.png)
+    ![](fiori/unit3/img_088.png)
 
 
 2. Enter the following in the **Table Card Settings Parameters**,
@@ -908,7 +908,7 @@ In this step we will provide card manifest settings.
     * Select **Yes** from **Tabs** dropdown.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_089.png)
+    ![](fiori/unit3/img_089.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the generated card setting.
 
@@ -931,12 +931,12 @@ In this step we will provide card manifest settings.
 
    Generated Card Setting:
 
-    ![](images/unit3/img_090.png)
+    ![](fiori/unit3/img_090.png)
 
 
 3. Click **Next**
 
-    ![](images/unit3/img_091.png)
+    ![](fiori/unit3/img_091.png)
 
 ### Guided Development Step 6
 
@@ -949,7 +949,7 @@ In this step, we will create tab settings for the view switch.
     * Enter **Open/In Progress** as **Value**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_092.png)
+    ![](fiori/unit3/img_092.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the tab setting appended to the card tabs setting we generated in Step 5.
 
@@ -964,7 +964,7 @@ In this step, we will create tab settings for the view switch.
 
    Generated Tab Settings:
 
-    ![](images/unit3/img_093.png)
+    ![](fiori/unit3/img_093.png)
 
 
 2. Enter the following in the **Tab Setting Parameters**,
@@ -974,7 +974,7 @@ In this step, we will create tab settings for the view switch.
     * Enter **Accepted** as **Value**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_094.png)
+    ![](fiori/unit3/img_094.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the tab setting appended to the card tabs setting we generated in Step 5.
 
@@ -988,7 +988,7 @@ In this step, we will create tab settings for the view switch.
    ```
    Generated Tab Setting:
 
-    ![](images/unit3/img_095.png)
+    ![](fiori/unit3/img_095.png)
 
 
 3. Enter the following in the **Tab Setting Parameters**,
@@ -998,7 +998,7 @@ In this step, we will create tab settings for the view switch.
     * Enter **Rejected** as **Value**.
     * Click **Insert Snippet (formerly Apply)**
 
-    ![](images/unit3/img_096.png)
+    ![](fiori/unit3/img_096.png)
 
    After clicking on Insert Snippet (formerly Apply), this would be the tab setting appended to the card tabs setting we generated in Step 5.
 
@@ -1013,33 +1013,33 @@ In this step, we will create tab settings for the view switch.
 
    Generated Tab setting
 
-    ![](images/unit3/img_097.png)
+    ![](fiori/unit3/img_097.png)
 
 
 4. Click **Exit Guide**
 
-    ![](images/unit3/img_098.png)
+    ![](fiori/unit3/img_098.png)
 
 
 ### Preview Application
 
 1. Click on **traveloverview** with the right mouse button.
 
-    ![](images/unit3/img_099.png)
+    ![](fiori/unit3/img_099.png)
 
 
 2. Click **Preview Application**
 
-    ![](images/unit3/img_0100.png)
+    ![](fiori/unit3/img_0100.png)
 
 
 3. Click **start fiori run --open 'test/flpSandbox.html#traveloverview-tile**
 
-    ![](images/unit3/img_0101.png)
+    ![](fiori/unit3/img_0101.png)
 
 * Application Preview
 
-    ![](images/unit3/img_201.png)
+    ![](fiori/unit3/img_201.png)
 
 ## Step 6. Adding Text Arrangement for V4 card
 
@@ -1047,7 +1047,7 @@ Let’s add a text arrangement annotation for the description field. With this a
 
 1. Click to open **annotation0.xml**
 
-    ![](images/unit3/img_202.png)
+    ![](fiori/unit3/img_202.png)
 
 
 2. Paste the following annotation in the annotation file for the OData V4 service.
@@ -1062,11 +1062,11 @@ Let’s add a text arrangement annotation for the description field. With this a
 
    Annotation Preview:
 
-    ![](images/unit3/img_203.png)
+    ![](fiori/unit3/img_203.png)
 
    Application Preview:
 
-    ![](images/unit3/img_204.png)
+    ![](fiori/unit3/img_204.png)
 
 
 
@@ -1076,7 +1076,7 @@ Next step would be to configure the smart filter bar to show only the relevant f
 
 1. Click to open **annotation.xml**
 
-    ![](images/unit3/img_205.png)
+    ![](fiori/unit3/img_205.png)
 
 
 2. Paste the following in the annotation.xml file.
@@ -1102,11 +1102,11 @@ Next step would be to configure the smart filter bar to show only the relevant f
 
    Annotation Preview:
 
-    ![](images/unit3/img_206.png)
+    ![](fiori/unit3/img_206.png)
 
    Application Preview:
 
-    ![](images/unit3/img_207.png)
+    ![](fiori/unit3/img_207.png)
 
 
 
@@ -1230,5 +1230,5 @@ Manifest setting for the card,
 
 ### Preview of the application after adding **Analytical Card** (Donut Chart) and **Static Link List Card**.
 
-![](images/unit3/img_300.png)
+![](fiori/unit3/img_300.png)
 
