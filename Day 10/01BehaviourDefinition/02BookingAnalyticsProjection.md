@@ -11,6 +11,7 @@
 
 # Exercise 1 - Create Interface Analytics views
 
+```
 @AbapCatalog.viewEnhancementCategory: [#NONE]
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Travel Analytics'
@@ -51,11 +52,12 @@ define view entity ZITC_AO_I_TRAVEL_ANALYTICS
       _Agency,
       _Customer
 }
-
+```
 
 
 --
 
+```
 @AbapCatalog.viewEnhancementCategory: [#NONE]
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'booking analytics'
@@ -102,10 +104,11 @@ define root view entity ZITC_AO_I_BOOKING_ANALYTICS
       _Connection
 
 }
-
+```
 
 # Exercise 2 - Create Booking Projection View
 
+```
 @EndUserText.label: 'Booking Analytics'
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 define root view entity ZITC_AO_C_BOOKING_ANALYTICS
@@ -146,10 +149,11 @@ define root view entity ZITC_AO_C_BOOKING_ANALYTICS
       _Connection
 
 }
-
+```
 
 # Exercise 3: Create Service definition as below
 
+```
 @EndUserText.label: 'Service definition analytics'
 define service ZITC_FE_BOOKING_XX {
   expose ZITC_AO_C_BOOKING_ANALYTICS as Booking;
@@ -161,3 +165,4 @@ define service ZITC_FE_BOOKING_XX {
   expose /DMO/I_Customer             as Customer;
   expose /DMO/I_Agency               as Agency;
 }
+```
