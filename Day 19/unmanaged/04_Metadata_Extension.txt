@@ -2,11 +2,13 @@
 @EndUserText.label: 'Travel view - CDS data model'
 @UI: { headerInfo: { typeName: 'Travel',
                      typeNamePlural: 'Travels'
-                     },
-       presentationVariant: [{ sortOrder: [{ by: 'TravelID', direction: #DESC }] }] }
+                     }
+                     ,
+       presentationVariant: [{ sortOrder: [{ by: 'AgencyId', direction: #DESC }] }] 
+}
 
 @Search.searchable: true
-annotate view ZI_TRAVEL_U_XX
+annotate view ZI_ITC_XX_TRAVEL_U_AB
   with 
 {
   @UI.facet: [ { id:            'Travel',
@@ -21,13 +23,11 @@ annotate view ZI_TRAVEL_U_XX
                             importance: #HIGH ,
                             label: 'Travel ID'}
                          ],
-         identification: [ { position: 10 },
-                           
-                         ],
+         identification: [ { position: 10 } ],
          selectionField: [ { position: 10 } ] }
   @EndUserText.quickInfo: 'Travel Identification for Customer.'
   @Search.defaultSearchElement: true
-  TravelID;
+  TravelId;
 
   @UI: { lineItem:       [ { position: 20,
                              importance: #HIGH,
@@ -37,7 +37,7 @@ annotate view ZI_TRAVEL_U_XX
   @Consumption.valueHelpDefinition: [{ entity: { name: '/DMO/I_Agency', element: 'AgencyID' } }]
    @EndUserText.label: 'Agency ID'
   @Search.defaultSearchElement: true
-  AgencyID;
+  AgencyId;
 
   @UI: { lineItem:       [ { position: 30,
                              importance: #HIGH,
@@ -47,7 +47,7 @@ annotate view ZI_TRAVEL_U_XX
   @Consumption.valueHelpDefinition: [{ entity: { name: '/DMO/I_Customer', element: 'CustomerID'  } }]
   @EndUserText.label: 'Customer Number'
   @Search.defaultSearchElement: true
-  CustomerID;
+  CustomerId;
 
   @UI: { lineItem:       [ { position: 40,
                               importance: #MEDIUM,

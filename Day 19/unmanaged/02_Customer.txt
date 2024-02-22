@@ -1,10 +1,13 @@
-@AbapCatalog.sqlViewName: 'ZCUSTOMER_UXX'
-@AbapCatalog.compiler.compareFilter: true
-@AbapCatalog.preserveKey: true
+@AbapCatalog.viewEnhancementCategory: [#NONE]
 @AccessControl.authorizationCheck: #CHECK
-@EndUserText.label: 'Customer view - CDS Data Model'
-define view ZI_Customer_U_XX
-  as select from /dmo/customer as Customer
+@EndUserText.label: 'Customer'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZI_ITC_XX_Customer_U as select from /dmo/customer as Customer
   association [0..1] to I_Country as _Country on $projection.CountryCode = _Country.Country
 {
   key Customer.customer_id   as CustomerID,

@@ -1,10 +1,13 @@
-@AbapCatalog.sqlViewName: 'ZAGENCY_URP'
-@AbapCatalog.compiler.compareFilter: true
-@AbapCatalog.preserveKey: true
+@AbapCatalog.viewEnhancementCategory: [#NONE]
 @AccessControl.authorizationCheck: #CHECK
-@EndUserText.label: 'Agency view - CDS data model'
-define view ZI_Agency_U_RP
-  as select from /dmo/agency as Agency
+@EndUserText.label: 'Agency'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZI_ITC_XX_Agency_U as select from /dmo/agency as Agency
   association [0..1] to I_Country as _Country on $projection.CountryCode = _Country.Country
 {
 

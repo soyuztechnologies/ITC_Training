@@ -1,0 +1,34 @@
+unmanaged implementation in class zcl_i_ITC_XX_travel_u unique;
+strict;
+
+define behavior for ZI_ITC_XX_TRAVEL_U alias Travel
+implementation in class zcl_i_ITC_XX_travel_u unique
+etag master LastChangedAt
+lock master
+authorization master ( global )
+//etag master <field_name>
+{
+  //field ( readonly ) TravelID;
+  field ( mandatory ) AgencyID, CustomerID, BeginDate, EndDate;
+
+  create;
+  update;
+  delete;
+
+  action ( features : instance ) set_status_booked result [1] $self;
+
+  mapping for /dmo/travel control /dmo/s_travel_intx
+  {
+    AgencyID      = agency_id;
+    BeginDate     = begin_date;
+    BookingFee    = booking_fee;
+    CurrencyCode  = currency_code;
+    CustomerID    = customer_id;
+    EndDate       = end_date;
+    LastChangedAt = lastchangedat;
+    Memo          = description;
+    Status        = status;
+    TotalPrice    = total_price;
+    TravelID      = travel_id;
+  }
+}
